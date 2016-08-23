@@ -27,7 +27,7 @@ public final class QueryUtils {
                     SensitiveInfo.getApiKey());
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String IMAGE_SIZE = "w185";
+    private static final String IMAGE_SIZE = "w342";
 
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 

@@ -37,6 +37,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
         Movie currentMovie = mMovieList.get(position);
 
+        holder.movieName.setText(currentMovie.getName());
         Picasso.with(mContext).load(currentMovie.getPosterThumbnail()).into(holder.movieThumbnail);
 
     }
