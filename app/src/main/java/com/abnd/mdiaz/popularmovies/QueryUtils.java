@@ -128,13 +128,14 @@ public final class QueryUtils {
 
                 String name = movieObject.getString("title");
                 String posterThumbnail = movieObject.getString("poster_path");
+                String backdropImage = movieObject.getString("backdrop_path");
                 String synopsis = movieObject.getString("overview");
                 float rating = (float) movieObject.getDouble("popularity");
                 String releaseDate = movieObject.getString("release_date");
 
                 String fullImagePath = IMAGE_BASE_URL + IMAGE_SIZE + posterThumbnail;
 
-                movieList.add(new Movie(name, fullImagePath, synopsis, rating, releaseDate));
+                movieList.add(new Movie(name, fullImagePath, backdropImage, synopsis, rating, releaseDate));
 
             }
 

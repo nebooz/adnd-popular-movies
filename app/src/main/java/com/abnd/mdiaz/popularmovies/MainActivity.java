@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView.LayoutManager mLayoutManager;
 
     private int gridColumns;
+    private GridSpacing itemDecoration;
     private static final int LANDSCAPE_GRID_COLUMNS = 5;
     private static final int PORTRAIT_GRID_COLUMNS = 3;
 
@@ -28,11 +29,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Check the screen orientation to alter the number of columns in the GridLayout
-        checkOrientation();
-
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
         mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
+
+        //Check the screen orientation to alter the number of columns in the GridLayout
+        checkOrientation();
 
         mLayoutManager = new GridLayoutManager(this, gridColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         I searched online for a way to adjust the column spacing for the grid view so it is
         perfectly centered... this is doing a good job, but it is not exact.
         */
-        GridSpacing itemDecoration = new GridSpacing(this, R.dimen.item_offset);
         mRecyclerView.addItemDecoration(itemDecoration);
 
         getSupportLoaderManager().initLoader(0, null, this);
@@ -57,8 +57,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
             gridColumns = LANDSCAPE_GRID_COLUMNS;
+            itemDecoration = new GridSpacing(this, R.dimen.item_offset_landscape);
         } else {
             gridColumns = PORTRAIT_GRID_COLUMNS;
+            itemDecoration = new GridSpacing(this, R.dimen.item_offset_portrait);
         }
     }
 

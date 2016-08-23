@@ -7,11 +7,12 @@ public class Movie {
 
     String mName;
     String mPosterThumbnail;
+    String mBackdropImage;
     String mSynopsis;
     float mRating;
     String mReleaseDate;
 
-    public Movie(String name, String posterThumbnail, String synopsis, float rating, String releaseDate) {
+    public Movie(String name, String posterThumbnail, String backdropImage, String synopsis, float rating, String releaseDate) {
         mName = name;
         mPosterThumbnail = posterThumbnail;
         mSynopsis = synopsis;
@@ -25,6 +26,10 @@ public class Movie {
 
     public String getPosterThumbnail() {
         return mPosterThumbnail;
+    }
+
+    public String getBackdropImage() {
+        return mBackdropImage;
     }
 
     public String getSynopsis() {
