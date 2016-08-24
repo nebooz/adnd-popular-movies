@@ -1,8 +1,9 @@
 package com.abnd.mdiaz.popularmovies;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
 
@@ -44,6 +45,8 @@ public final class QueryUtils {
 
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
+    private static Context mContext;
+
     private QueryUtils() {
     }
 
@@ -55,7 +58,9 @@ public final class QueryUtils {
         return TOP_MOVIES_URL;
     }
 
-    public static List<Movie> fetchMovieData(URL url) {
+    public static List<Movie> fetchMovieData(URL url, Context context) {
+
+        mContext = context;
 
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
@@ -142,7 +147,8 @@ public final class QueryUtils {
 
                 //One movie
                 JSONObject movieObject = results.getJSONObject(i);
-
+                
+                //Getting properties
                 String name = movieObject.getString("title");
                 String posterThumbnail = movieObject.getString("poster_path");
                 String backdropImage = movieObject.getString("backdrop_path");
@@ -151,18 +157,20 @@ public final class QueryUtils {
                 String releaseDate = movieObject.getString("release_date");
 
                 //Getting a more readable date
-                String formattedDate = "Release Date: " + dateFormat(releaseDate);
-
+                String formattedDate = mContext.getString(R.string.release_date) + dateFormat(releaseDate);
+                
+                //I'm using a smaller image to get the Palette. I presume it to be faster.
                 String colorGenerationPath = IMAGE_BASE_URL + SMALL_IMAGE_SIZE + posterThumbnail;
                 String fullPosterImagePath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + posterThumbnail;
                 String fullBackdropImagePath = IMAGE_BASE_URL + LARGE_IMAGE_SIZE + backdropImage;
-
+                
+                //Getting both colors per picture based on the poster image.
                 Bitmap basicBitmap = getBitmapFromURL(colorGenerationPath);
                 Palette palette = new Palette.Builder(basicBitmap).generate();
-
-                int darkColor = palette.getDarkMutedColor(Color.parseColor("#0D47A1"));
-                int lightColor = palette.getLightMutedColor(Color.parseColor("#2196F3"));
-
+                int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(mContext, R.color.defaultDarkColor));
+                int lightColor = palette.getLightMutedColor(ContextCompat.getColor(mContext, R.color.defaultLightColor));
+                
+                //Add Movie to the MovieList
                 movieList.add(new Movie(name, fullPosterImagePath, fullBackdropImagePath, synopsis,
                         rating, formattedDate, darkColor, lightColor));
 

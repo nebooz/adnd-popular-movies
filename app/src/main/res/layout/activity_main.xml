@@ -7,11 +7,20 @@
     android:orientation="vertical"
     tools:context="com.abnd.mdiaz.popularmovies.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:visibility="gone"
         android:padding="@dimen/item_offset_portrait" />
 
 </LinearLayout>

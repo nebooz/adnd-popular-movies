@@ -36,6 +36,6 @@ public class MovieLoader extends AsyncTaskLoader<List<Movie>> {
             e.printStackTrace();
         }
 
-        return QueryUtils.fetchMovieData(u);
+        return QueryUtils.fetchMovieData(u, getContext());
     }
 }

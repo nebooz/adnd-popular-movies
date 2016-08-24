@@ -1,5 +1,6 @@
 package com.abnd.mdiaz.popularmovies;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -28,6 +29,10 @@ public class MovieDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
+        //No landscape mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        //Get all the Extras...
         String movieName = getIntent().getStringExtra("name");
         String moviePosterPath = getIntent().getStringExtra("poster_path");
         String movieBackdropPath = getIntent().getStringExtra("backdrop_path");
@@ -37,6 +42,7 @@ public class MovieDetail extends AppCompatActivity {
         int movieDarkColor = getIntent().getIntExtra("dark_color", Color.BLUE);
         int movieLightColor = getIntent().getIntExtra("light_color", Color.CYAN);
 
+        //Assign all views...
         mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         titleBackground = findViewById(R.id.title_bg);
         releaseBackground = findViewById(R.id.release_bg);
@@ -47,6 +53,7 @@ public class MovieDetail extends AppCompatActivity {
         movieReleaseDateTextView = (TextView) findViewById(R.id.txt_release_date);
         movieSynopsisTextView = (TextView) findViewById(R.id.txt_synopsis);
 
+        //Assign values to views...
         movieTitleTextView.setText(movieName);
         movieRatingTextView.setText(String.format("%.1f", movieRating));
         movieReleaseDateTextView.setText(movieReleaseDate);
@@ -62,6 +69,7 @@ public class MovieDetail extends AppCompatActivity {
         titleBackground.setBackgroundColor(movieDarkColor);
         releaseBackground.setBackgroundColor(movieLightColor);
 
+        //Picasso magic.
         Picasso.with(this).load(moviePosterPath).into(posterImageView);
         Picasso.with(this).load(movieBackdropPath).into(backdropImageView);
 

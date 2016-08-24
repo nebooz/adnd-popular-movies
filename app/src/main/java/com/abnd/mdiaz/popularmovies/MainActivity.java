@@ -1,5 +1,6 @@
 package com.abnd.mdiaz.popularmovies;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -11,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ProgressBar mProgressBar;
 
     private boolean popSort;
 
@@ -34,7 +38,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //No landscape mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         popSort = true;
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
         mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
@@ -83,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         invalidateOptionsMenu();
         if (popSort) {
             popSort = false;
+            //Not a 100% sure if these RestartLoaders are the best option for this.
             getSupportLoaderManager().restartLoader(0, null, this);
         } else {
             popSort = true;
@@ -108,6 +117,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
+
+        //Hide the RecyclerView and show the ProgressBar till finished...
+        mRecyclerView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+
         if (popSort) {
             return new MovieLoader(this, QueryUtils.getPopularMoviesUrl());
         } else {
@@ -117,8 +131,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+        //Loader is done and we revert the display process.
         mAdapter.clearData();
         mAdapter.setMovieList(data);
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

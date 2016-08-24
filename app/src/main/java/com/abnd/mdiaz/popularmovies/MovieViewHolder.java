@@ -36,6 +36,10 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
                 String movieBackdropPath = selectedMovie.getBackdropImage();
                 String movieSynopsis = selectedMovie.getSynopsis();
 
+                /*
+                I'm gonna use the serializable or parcelable objects only when I understand
+                how they work...
+                */
                 intent.putExtra("name", movieName);
                 intent.putExtra("release_date", movieReleaseDate);
                 intent.putExtra("rating", movieRating);
