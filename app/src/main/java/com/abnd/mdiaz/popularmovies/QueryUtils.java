@@ -13,7 +13,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +30,8 @@ public final class QueryUtils {
                     SensitiveInfo.getApiKey());
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String IMAGE_SIZE = "w342";
+    private static final String MEDIUM_IMAGE_SIZE = "w185";
+    private static final String LARGE_IMAGE_SIZE = "w500";
 
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
@@ -130,12 +134,16 @@ public final class QueryUtils {
                 String posterThumbnail = movieObject.getString("poster_path");
                 String backdropImage = movieObject.getString("backdrop_path");
                 String synopsis = movieObject.getString("overview");
-                float rating = (float) movieObject.getDouble("popularity");
+                float rating = (float) movieObject.getDouble("vote_average");
                 String releaseDate = movieObject.getString("release_date");
 
-                String fullImagePath = IMAGE_BASE_URL + IMAGE_SIZE + posterThumbnail;
+                //Getting a more readable date
+                String formattedDate = "Release Date: " + dateFormat(releaseDate);
 
-                movieList.add(new Movie(name, fullImagePath, backdropImage, synopsis, rating, releaseDate));
+                String fullPosterImagePath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + posterThumbnail;
+                String fullBackdropImagePath = IMAGE_BASE_URL + LARGE_IMAGE_SIZE + backdropImage;
+
+                movieList.add(new Movie(name, fullPosterImagePath, fullBackdropImagePath, synopsis, rating, formattedDate));
 
             }
 
@@ -147,5 +155,24 @@ public final class QueryUtils {
         }
 
         return movieList;
+    }
+
+    private static String dateFormat(String releaseDate) {
+
+        String inputString = "yyyy-MM-dd";
+        String outputString = "MMMM dd, yyyy";
+        SimpleDateFormat parser = new SimpleDateFormat(inputString);
+        SimpleDateFormat properForm = new SimpleDateFormat(outputString);
+
+        String formattedDate = null;
+
+        try {
+            Date properDate = parser.parse(releaseDate);
+            formattedDate = properForm.format(properDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
     }
 }

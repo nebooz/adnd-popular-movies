@@ -25,11 +25,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     }
 
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_card, parent, false);
 
-        return new MovieViewHolder(v);
+        return new MovieViewHolder(v, mMovieList);
     }
 
     @Override
@@ -52,5 +52,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         mMovieList.addAll(movieList);
         notifyDataSetChanged();
 
+    }
+
+    public void clearData() {
+        mMovieList.clear();
+        notifyDataSetChanged();
     }
 }

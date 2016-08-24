@@ -5,15 +5,16 @@ package com.abnd.mdiaz.popularmovies;
  */
 public class Movie {
 
-    String mName;
-    String mPosterThumbnail;
-    String mBackdropImage;
-    String mSynopsis;
-    float mRating;
-    String mReleaseDate;
+    private String mName;
+    private String mPosterThumbnail;
+    private String mBackdropImage;
+    private String mSynopsis;
+    private float mRating;
+    private String mReleaseDate;
 
     public Movie(String name, String posterThumbnail, String backdropImage, String synopsis, float rating, String releaseDate) {
         mName = name;
+        mBackdropImage = backdropImage;
         mPosterThumbnail = posterThumbnail;
         mSynopsis = synopsis;
         mRating = rating;

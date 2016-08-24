@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>>{
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+        mAdapter.clearData();
         mAdapter.setMovieList(data);
     }
 
@@ -78,4 +79,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(Loader<List<Movie>> loader) {
         mAdapter.setMovieList(new ArrayList<Movie>());
     }
+
 }
