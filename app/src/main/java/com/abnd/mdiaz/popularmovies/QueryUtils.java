@@ -33,6 +33,10 @@ public final class QueryUtils {
             String.format("http://api.themoviedb.org/3/movie/popular?api_key=%s&page=2",
                     SensitiveInfo.getApiKey());
 
+    private static final String TOP_MOVIES_URL =
+            String.format("http://api.themoviedb.org/3/movie/top_rated?api_key=%s&page=2",
+                    SensitiveInfo.getApiKey());
+
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String SMALL_IMAGE_SIZE = "w92";
     private static final String MEDIUM_IMAGE_SIZE = "w185";
@@ -43,8 +47,12 @@ public final class QueryUtils {
     private QueryUtils() {
     }
 
-    public static String getQueryUrl() {
+    public static String getPopularMoviesUrl() {
         return POP_MOVIES_URL;
+    }
+
+    public static String getTopMoviesUrl() {
+        return TOP_MOVIES_URL;
     }
 
     public static List<Movie> fetchMovieData(URL url) {

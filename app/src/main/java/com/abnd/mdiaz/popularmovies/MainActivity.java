@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.Surface;
 import android.view.WindowManager;
 
@@ -19,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MovieAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private boolean popSort;
+
     private int gridColumns;
     private GridSpacing itemDecoration;
     private static final int LANDSCAPE_GRID_COLUMNS = 5;
@@ -28,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        popSort = true;
 
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
         mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
@@ -49,6 +56,41 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.movies_menu, menu);
+
+        MenuItem sortMenuItem = menu.findItem(R.id.sort_option);
+        if (popSort) {
+            sortMenuItem.setIcon(R.drawable.top);
+        } else {
+            sortMenuItem.setIcon(R.drawable.pop);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.sort_option) {
+            changeSort();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void changeSort() {
+        invalidateOptionsMenu();
+        if (popSort) {
+            popSort = false;
+            getSupportLoaderManager().restartLoader(0, null, this);
+        } else {
+            popSort = true;
+            getSupportLoaderManager().restartLoader(0, null, this);
+        }
+
+    }
+
     private void checkOrientation() {
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
                 .getDefaultDisplay();
@@ -66,7 +108,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        return new MovieLoader(this, QueryUtils.getQueryUrl());
+        if (popSort) {
+            return new MovieLoader(this, QueryUtils.getPopularMoviesUrl());
+        } else {
+            return new MovieLoader(this, QueryUtils.getTopMoviesUrl());
+        }
     }
 
     @Override
