@@ -82,11 +82,15 @@
 
     <TextView
         android:id="@+id/txt_synopsis"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#BDBDBD"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textStyle="italic"
+        android:background="#80FFFFFF"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:layout_marginTop="48dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         tools:text="After the re-emergence of the world's first mutant, world-destroyer Apocalypse, the X-Men must unite to defeat his extinction level plan."

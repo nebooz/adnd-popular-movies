@@ -1,5 +1,9 @@
 package com.abnd.mdiaz.popularmovies;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -30,6 +34,7 @@ public final class QueryUtils {
                     SensitiveInfo.getApiKey());
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String SMALL_IMAGE_SIZE = "w92";
     private static final String MEDIUM_IMAGE_SIZE = "w185";
     private static final String LARGE_IMAGE_SIZE = "w500";
 
@@ -140,10 +145,18 @@ public final class QueryUtils {
                 //Getting a more readable date
                 String formattedDate = "Release Date: " + dateFormat(releaseDate);
 
+                String colorGenerationPath = IMAGE_BASE_URL + SMALL_IMAGE_SIZE + posterThumbnail;
                 String fullPosterImagePath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + posterThumbnail;
                 String fullBackdropImagePath = IMAGE_BASE_URL + LARGE_IMAGE_SIZE + backdropImage;
 
-                movieList.add(new Movie(name, fullPosterImagePath, fullBackdropImagePath, synopsis, rating, formattedDate));
+                Bitmap basicBitmap = getBitmapFromURL(colorGenerationPath);
+                Palette palette = new Palette.Builder(basicBitmap).generate();
+
+                int darkColor = palette.getDarkMutedColor(Color.parseColor("#0D47A1"));
+                int lightColor = palette.getLightMutedColor(Color.parseColor("#2196F3"));
+
+                movieList.add(new Movie(name, fullPosterImagePath, fullBackdropImagePath, synopsis,
+                        rating, formattedDate, darkColor, lightColor));
 
             }
 
@@ -155,6 +168,21 @@ public final class QueryUtils {
         }
 
         return movieList;
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
     }
 
     private static String dateFormat(String releaseDate) {

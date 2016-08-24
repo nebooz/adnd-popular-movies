@@ -1,19 +1,15 @@
 package com.abnd.mdiaz.popularmovies;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 public class MovieDetail extends AppCompatActivity {
 
@@ -38,6 +34,8 @@ public class MovieDetail extends AppCompatActivity {
         float movieRating = getIntent().getFloatExtra("rating", 1f);
         String movieSynopsis = getIntent().getStringExtra("synopsis");
         String movieReleaseDate = getIntent().getStringExtra("release_date");
+        int movieDarkColor = getIntent().getIntExtra("dark_color", Color.BLUE);
+        int movieLightColor = getIntent().getIntExtra("light_color", Color.CYAN);
 
         mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         titleBackground = findViewById(R.id.title_bg);
@@ -54,37 +52,17 @@ public class MovieDetail extends AppCompatActivity {
         movieReleaseDateTextView.setText(movieReleaseDate);
         movieSynopsisTextView.setText(movieSynopsis);
 
-        Picasso.with(this).load(moviePosterPath).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, new int[] {Color.WHITE, movieDarkColor});
 
-                posterImageView.setImageBitmap(bitmap);
-                Palette p = Palette.from(bitmap).generate();
+        mainLayout.setBackground(gd);
 
-                int darkVibrantColor = p.getDarkVibrantColor(Color.parseColor("#0D47A1"));
+        movieSynopsisTextView.setTextColor(movieDarkColor);
+        movieRatingTextView.setBackgroundColor(movieDarkColor);
+        titleBackground.setBackgroundColor(movieDarkColor);
+        releaseBackground.setBackgroundColor(movieLightColor);
 
-                GradientDrawable gd = new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM, new int[] {Color.WHITE, darkVibrantColor});
-
-                mainLayout.setBackground(gd);
-
-                movieSynopsisTextView.setTextColor(darkVibrantColor);
-                titleBackground.setBackgroundColor(darkVibrantColor);
-                releaseBackground.setBackgroundColor(p.getLightVibrantColor(Color.parseColor("#2196F3")));
-
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        });
-
+        Picasso.with(this).load(moviePosterPath).into(posterImageView);
         Picasso.with(this).load(movieBackdropPath).into(backdropImageView);
 
     }

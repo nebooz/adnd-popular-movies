@@ -42,6 +42,8 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("poster_path", moviePosterPath);
                 intent.putExtra("backdrop_path", movieBackdropPath);
                 intent.putExtra("synopsis", movieSynopsis);
+                intent.putExtra("dark_color", selectedMovie.getDarkColor());
+                intent.putExtra("light_color", selectedMovie.getLightColor());
 
                 view.getContext().startActivity(intent);
             }
