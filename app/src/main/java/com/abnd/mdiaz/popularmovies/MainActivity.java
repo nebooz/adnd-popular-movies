@@ -15,6 +15,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MovieAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ProgressBar mProgressBar;
+    private RelativeLayout mProgressContainer;
 
     private boolean popSort;
 
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         popSort = true;
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mProgressContainer = (RelativeLayout) findViewById(R.id.progress_container);
 
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
         mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //Hide the RecyclerView and show the ProgressBar till finished...
         mRecyclerView.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressContainer.setVisibility(View.VISIBLE);
 
         if (popSort) {
             return new MovieLoader(this, QueryUtils.getPopularMoviesUrl());
@@ -135,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter.clearData();
         mAdapter.setMovieList(data);
 
+        mProgressContainer.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
