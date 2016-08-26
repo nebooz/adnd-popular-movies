@@ -1,8 +1,8 @@
 package com.abnd.mdiaz.popularmovies;
 
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +14,10 @@ import android.view.MenuItem;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
 import com.abnd.mdiaz.popularmovies.model.Movie;
+import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
 import com.abnd.mdiaz.popularmovies.rest.ApiClient;
 import com.abnd.mdiaz.popularmovies.rest.ApiInterface;
 
@@ -34,12 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ProgressBar mProgressBar;
     private RelativeLayout mProgressContainer;
 
     private boolean popSort;
-    private int mDarkColor;
-    private int mLightColor;
 
     private int gridColumns;
     private GridSpacing itemDecoration;
@@ -47,15 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int PORTRAIT_GRID_COLUMNS = 3;
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private List<Movie> mMovieList = new ArrayList<>();
-
-    private Bitmap colorGenBitmap;
-
-    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String SMALL_IMAGE_SIZE = "w92";
-    private static final String MEDIUM_IMAGE_SIZE = "w185";
-    private static final String LARGE_IMAGE_SIZE = "w500";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         popSort = true;
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mProgressContainer = (RelativeLayout) findViewById(R.id.progress_container);
 
         mAdapter = new MovieAdapter(this, new ArrayList<Movie>());
@@ -104,10 +90,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.sort_option) {
-            changeSort();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.sort_option:
+                changeSort();
+                return true;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -118,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             popSort = true;
         }
+
+        mProgressContainer.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
 
         getMovieList(popSort);
     }

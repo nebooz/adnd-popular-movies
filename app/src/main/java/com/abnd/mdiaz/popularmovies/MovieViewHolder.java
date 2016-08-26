@@ -29,7 +29,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View view) {
 
                 int position = getAdapterPosition();
-                Intent intent = new Intent(view.getContext(), MovieDetail.class);
+                Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
                 Movie selectedMovie = mMovieList.get(position);
 
                 intent.putExtra("selected_movie", selectedMovie);

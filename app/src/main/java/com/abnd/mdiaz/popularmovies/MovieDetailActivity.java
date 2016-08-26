@@ -3,7 +3,6 @@ package com.abnd.mdiaz.popularmovies;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,14 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.abnd.mdiaz.popularmovies.model.Movie;
+import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MovieDetail extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity {
 
     private ImageView backdropImageView;
     private ImageView posterImageView;
@@ -44,6 +43,8 @@ public class MovieDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //No landscape mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -78,29 +79,41 @@ public class MovieDetail extends AppCompatActivity {
         movieSynopsisTextView.setText(movieSynopsis);
 
         String colorGenerationPath = IMAGE_BASE_URL + SMALL_IMAGE_SIZE + moviePosterPath;
-
-        Picasso.with(this).load(colorGenerationPath).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                new getLayoutColors().execute(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        });
-
         String fullPosterPath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + moviePosterPath;
         String fullBackdropPath = IMAGE_BASE_URL + LARGE_IMAGE_SIZE + movieBackdropPath;
 
+        Picasso.with(this).load(fullPosterPath).into(
+            posterImageView,
+            PicassoPalette.with(fullPosterPath, posterImageView)
+                .use(PicassoPalette.Profile.MUTED_DARK)
+                .intoBackground(movieSynopsisTextView, PicassoPalette.Swatch.RGB)
+                .intoBackground(movieRatingTextView, PicassoPalette.Swatch.RGB)
+                .intoBackground(titleBackground, PicassoPalette.Swatch.RGB)
+
+                .use(PicassoPalette.Profile.MUTED_LIGHT)
+                .intoBackground(releaseBackground, PicassoPalette.Swatch.RGB)
+
+                .intoCallBack(new PicassoPalette.CallBack() {
+                    @Override
+                    public void onPaletteLoaded(Palette palette) {
+                        int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
+                                R.color.defaultDarkColor));
+
+                        GradientDrawable gd = new GradientDrawable(
+                                GradientDrawable.Orientation.TOP_BOTTOM, new int[] {Color.WHITE, darkColor});
+
+                        mainLayout.setBackground(gd);
+                    }
+                })
+            );
+
+
+
+
+        //new getLayoutColors().execute(color);
+
         //Picasso magic.
-        Picasso.with(this).load(fullPosterPath).into(posterImageView);
+        //Picasso.with(this).load(fullPosterPath).into(posterImageView);
         Picasso.with(this).load(fullBackdropPath).into(backdropImageView);
 
     }
@@ -133,9 +146,9 @@ public class MovieDetail extends AppCompatActivity {
 
         protected void onPostExecute(Palette palette) {
 
-            int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetail.this,
+            int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
                     R.color.defaultDarkColor));
-            int lightColor = palette.getLightMutedColor(ContextCompat.getColor(MovieDetail.this,
+            int lightColor = palette.getLightMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
                     R.color.defaultLightColor));
 
             GradientDrawable gd = new GradientDrawable(

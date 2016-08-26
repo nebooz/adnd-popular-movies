@@ -88,7 +88,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:textStyle="italic"
-        android:background="#80FFFFFF"
+        android:background="#800D47A1"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:layout_marginTop="48dp"
@@ -108,4 +108,5 @@
         android:background="#000000"
         android:elevation="5dp"
         tools:src="@drawable/test_image" />
+
 </RelativeLayout>
