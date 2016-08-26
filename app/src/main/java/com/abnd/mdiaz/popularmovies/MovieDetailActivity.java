@@ -1,10 +1,8 @@
 package com.abnd.mdiaz.popularmovies;
 
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         //No landscape mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        //Get all the Extras...
+        //Get the Parcelable object
         Movie movie = getIntent().getParcelableExtra("selected_movie");
 
         String movieName = movie.getTitle();
@@ -70,6 +68,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieReleaseDateTextView = (TextView) findViewById(R.id.txt_release_date);
         movieSynopsisTextView = (TextView) findViewById(R.id.txt_synopsis);
 
+        //Proper date
         String formattedDate = this.getString(R.string.release_date) + dateFormat(movieReleaseDate);
 
         //Assign values to views...
@@ -78,44 +77,41 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieReleaseDateTextView.setText(formattedDate);
         movieSynopsisTextView.setText(movieSynopsis);
 
-        String colorGenerationPath = IMAGE_BASE_URL + SMALL_IMAGE_SIZE + moviePosterPath;
         String fullPosterPath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + moviePosterPath;
         String fullBackdropPath = IMAGE_BASE_URL + LARGE_IMAGE_SIZE + movieBackdropPath;
 
-        Picasso.with(this).load(fullPosterPath).into(
-            posterImageView,
-            PicassoPalette.with(fullPosterPath, posterImageView)
-                .use(PicassoPalette.Profile.MUTED_DARK)
-                .intoBackground(movieSynopsisTextView, PicassoPalette.Swatch.RGB)
-                .intoBackground(movieRatingTextView, PicassoPalette.Swatch.RGB)
-                .intoBackground(titleBackground, PicassoPalette.Swatch.RGB)
-
-                .use(PicassoPalette.Profile.MUTED_LIGHT)
-                .intoBackground(releaseBackground, PicassoPalette.Swatch.RGB)
-
-                .intoCallBack(new PicassoPalette.CallBack() {
-                    @Override
-                    public void onPaletteLoaded(Palette palette) {
-                        int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
-                                R.color.defaultDarkColor));
-
-                        GradientDrawable gd = new GradientDrawable(
-                                GradientDrawable.Orientation.TOP_BOTTOM, new int[] {Color.WHITE, darkColor});
-
-                        mainLayout.setBackground(gd);
-                    }
-                })
-            );
-
-
-
-
-        //new getLayoutColors().execute(color);
-
-        //Picasso magic.
-        //Picasso.with(this).load(fullPosterPath).into(posterImageView);
         Picasso.with(this).load(fullBackdropPath).into(backdropImageView);
 
+        Picasso.with(this).load(fullPosterPath).into(
+                posterImageView,
+                PicassoPalette.with(fullPosterPath, posterImageView)
+                        .use(PicassoPalette.Profile.MUTED_DARK)
+                        .intoBackground(movieSynopsisTextView, PicassoPalette.Swatch.RGB)
+                        .intoBackground(movieRatingTextView, PicassoPalette.Swatch.RGB)
+                        .intoBackground(titleBackground, PicassoPalette.Swatch.RGB)
+
+                        .use(PicassoPalette.Profile.MUTED_LIGHT)
+                        .intoBackground(releaseBackground, PicassoPalette.Swatch.RGB)
+
+                        .intoCallBack(new PicassoPalette.CallBack() {
+                            @Override
+                            public void onPaletteLoaded(Palette palette) {
+                                int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
+                                        R.color.defaultDarkColor));
+
+                                GradientDrawable gd = new GradientDrawable(
+                                        GradientDrawable.Orientation.TOP_BOTTOM, new int[]{Color.WHITE, darkColor});
+
+                                mainLayout.setBackground(gd);
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
     }
 
     private static String dateFormat(String releaseDate) {
@@ -136,31 +132,5 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         return formattedDate;
-    }
-
-    private class getLayoutColors extends AsyncTask<Bitmap, Void, Palette> {
-
-        protected Palette doInBackground(Bitmap... bitmaps) {
-            return new Palette.Builder(bitmaps[0]).generate();
-        }
-
-        protected void onPostExecute(Palette palette) {
-
-            int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
-                    R.color.defaultDarkColor));
-            int lightColor = palette.getLightMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
-                    R.color.defaultLightColor));
-
-            GradientDrawable gd = new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM, new int[] {Color.WHITE, darkColor});
-
-            mainLayout.setBackground(gd);
-
-            movieSynopsisTextView.setTextColor(darkColor);
-            movieRatingTextView.setBackgroundColor(darkColor);
-            titleBackground.setBackgroundColor(darkColor);
-            releaseBackground.setBackgroundColor(lightColor);
-
-        }
     }
 }
