@@ -1,12 +1,12 @@
 package com.abnd.mdiaz.popularmovies;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,10 +17,19 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
+import com.abnd.mdiaz.popularmovies.model.Movie;
+import com.abnd.mdiaz.popularmovies.rest.ApiClient;
+import com.abnd.mdiaz.popularmovies.rest.ApiInterface;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Movie>> {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
@@ -29,11 +38,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RelativeLayout mProgressContainer;
 
     private boolean popSort;
+    private int mDarkColor;
+    private int mLightColor;
 
     private int gridColumns;
     private GridSpacing itemDecoration;
     private static final int LANDSCAPE_GRID_COLUMNS = 5;
     private static final int PORTRAIT_GRID_COLUMNS = 3;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private List<Movie> mMovieList = new ArrayList<>();
+
+    private Bitmap colorGenBitmap;
+
+    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String SMALL_IMAGE_SIZE = "w92";
+    private static final String MEDIUM_IMAGE_SIZE = "w185";
+    private static final String LARGE_IMAGE_SIZE = "w500";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +85,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         */
         mRecyclerView.addItemDecoration(itemDecoration);
 
-        getSupportLoaderManager().initLoader(0, null, this);
-
+        getMovieList(popSort);
     }
 
     @Override
@@ -94,13 +115,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         invalidateOptionsMenu();
         if (popSort) {
             popSort = false;
-            //Not a 100% sure if these RestartLoaders are the best option for this.
-            getSupportLoaderManager().restartLoader(0, null, this);
         } else {
             popSort = true;
-            getSupportLoaderManager().restartLoader(0, null, this);
         }
 
+        getMovieList(popSort);
     }
 
     private void checkOrientation() {
@@ -118,33 +137,44 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
+    private void loadAdapter(List<Movie> baseMovieList) {
 
-        //Hide the RecyclerView and show the ProgressBar till finished...
-        mRecyclerView.setVisibility(View.GONE);
-        mProgressContainer.setVisibility(View.VISIBLE);
-
-        if (popSort) {
-            return new MovieLoader(this, QueryUtils.getPopularMoviesUrl());
-        } else {
-            return new MovieLoader(this, QueryUtils.getTopMoviesUrl());
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-        //Loader is done and we revert the display process.
         mAdapter.clearData();
-        mAdapter.setMovieList(data);
+        mAdapter.setMovieList(baseMovieList);
 
         mProgressContainer.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
+
     }
 
-    @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-        mAdapter.setMovieList(new ArrayList<Movie>());
+    private void getMovieList(boolean popSort) {
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<MoviesResponse> call;
+
+        if (popSort) {
+            call = apiService.getPopularMovies(SensitiveInfo.getApiKey());
+        } else {
+            call = apiService.getTopRatedMovies(SensitiveInfo.getApiKey());
+        }
+
+        call.enqueue(new Callback<MoviesResponse>() {
+            @Override
+            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                List<Movie> movieList = response.body().getResults();
+                loadAdapter(movieList);
+                Log.d(TAG, "(mMovieList) Number of movies received: " + movieList.size());
+            }
+
+            @Override
+            public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                // Log error here since request failed
+                Log.e(TAG, t.toString());
+            }
+        });
+
     }
 
 }

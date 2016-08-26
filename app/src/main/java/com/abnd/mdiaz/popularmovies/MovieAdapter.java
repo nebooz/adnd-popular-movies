@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -15,6 +16,11 @@ import java.util.List;
  * Created by neboo on 23-Aug-16.
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
+
+    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String SMALL_IMAGE_SIZE = "w92";
+    private static final String MEDIUM_IMAGE_SIZE = "w185";
+    private static final String LARGE_IMAGE_SIZE = "w500";
 
     private Context mContext;
     private List<Movie> mMovieList = new ArrayList<>();
@@ -37,8 +43,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
         Movie currentMovie = mMovieList.get(position);
 
-        holder.movieName.setText(currentMovie.getName());
-        Picasso.with(mContext).load(currentMovie.getPosterThumbnail()).into(holder.movieThumbnail);
+        String fullPosterPath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + currentMovie.getPosterPath();
+
+        holder.movieName.setText(currentMovie.getTitle());
+        Picasso.with(mContext).load(fullPosterPath).into(holder.movieThumbnail);
 
     }
 

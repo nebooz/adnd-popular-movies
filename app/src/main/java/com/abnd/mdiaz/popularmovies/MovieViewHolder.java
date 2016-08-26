@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.abnd.mdiaz.popularmovies.model.Movie;
+
 import java.util.List;
 
 /**
@@ -25,29 +27,12 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 int position = getAdapterPosition();
                 Intent intent = new Intent(view.getContext(), MovieDetail.class);
                 Movie selectedMovie = mMovieList.get(position);
 
-                String movieName = selectedMovie.getName();
-                String movieReleaseDate = selectedMovie.getReleaseDate();
-                float movieRating = selectedMovie.getRating();
-                String moviePosterPath = selectedMovie.getPosterThumbnail();
-                String movieBackdropPath = selectedMovie.getBackdropImage();
-                String movieSynopsis = selectedMovie.getSynopsis();
-
-                /*
-                I'm gonna use the serializable or parcelable objects only when I understand
-                how they work...
-                */
-                intent.putExtra("name", movieName);
-                intent.putExtra("release_date", movieReleaseDate);
-                intent.putExtra("rating", movieRating);
-                intent.putExtra("poster_path", moviePosterPath);
-                intent.putExtra("backdrop_path", movieBackdropPath);
-                intent.putExtra("synopsis", movieSynopsis);
-                intent.putExtra("dark_color", selectedMovie.getDarkColor());
-                intent.putExtra("light_color", selectedMovie.getLightColor());
+                intent.putExtra("selected_movie", selectedMovie);
 
                 view.getContext().startActivity(intent);
             }
