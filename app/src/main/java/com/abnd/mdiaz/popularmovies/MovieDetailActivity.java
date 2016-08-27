@@ -81,10 +81,19 @@ public class MovieDetailActivity extends AppCompatActivity {
                             @Override
                             public void onPaletteLoaded(Palette palette) {
 
+                                /*
+                                Apparently, there is a difference between just getting the Resource
+                                straight up or using the getColor method...
+                                */
+                                int defaultDarkColor = ContextCompat.getColor(MovieDetailActivity.this,
+                                        R.color.defaultDarkColor);
+                                int defaultLightColor = ContextCompat.getColor(MovieDetailActivity.this,
+                                        R.color.defaultLightColor);
+
                                 int darkColor = palette.getDarkMutedColor(ContextCompat.
                                         getColor(MovieDetailActivity.this, R.color.defaultDarkColor));
 
-                                if (darkColor == -15906911) {
+                                if (darkColor == defaultDarkColor) {
                                     darkColor = palette.getDarkVibrantColor(ContextCompat.
                                             getColor(MovieDetailActivity.this, R.color.defaultDarkColor));
                                 }
@@ -92,13 +101,17 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 int lightColor = palette.getLightMutedColor(ContextCompat.
                                         getColor(MovieDetailActivity.this, R.color.defaultLightColor));
 
-                                if (lightColor == -14575885) {
+                                if (lightColor == defaultLightColor) {
                                     lightColor = palette.getLightVibrantColor(ContextCompat.
                                             getColor(MovieDetailActivity.this, R.color.defaultDarkColor));
                                 }
 
                                 movieRatingTextView.setBackgroundColor(darkColor);
+                                movieRatingTextView.setShadowLayer(10, 0, 0, Color.BLACK);
+
                                 movieTitleTextView.setBackgroundColor(darkColor);
+                                movieTitleTextView.setShadowLayer(10, 0, 0, Color.BLACK);
+
                                 movieReleaseDateTextView.setBackgroundColor(lightColor);
 
                                 int darkAlphaColor = ColorUtils.setAlphaComponent(darkColor, 128);
@@ -106,7 +119,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                                 GradientDrawable gd = new GradientDrawable(
                                         GradientDrawable.Orientation.TOP_BOTTOM,
-                                        new int[]{Color.WHITE, darkColor});
+                                        new int[]{Color.WHITE, lightColor});
 
                                 mainLayout.setBackground(gd);
                             }
