@@ -13,14 +13,15 @@
         <ImageView
             android:id="@+id/img_backdrop"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/backdrop_test"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:layout_constraintHorizontal_bias="1.0" />
 
         <TextView
             android:id="@+id/txt_title"
@@ -37,10 +38,12 @@
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_backdrop"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
-            tools:text="The Lord of The Rings: The Return of the King" />
+            tools:text="The Lord of The Rings: The Return of the King"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintTop_toTopOf="@+id/img_backdrop"
+            android:layout_marginTop="244dp" />
 
         <TextView
             android:id="@+id/txt_release_date"
@@ -106,7 +109,7 @@
             android:layout_width="120dp"
             android:layout_height="180dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="136dp"
+            android:layout_marginTop="144dp"
             android:elevation="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"

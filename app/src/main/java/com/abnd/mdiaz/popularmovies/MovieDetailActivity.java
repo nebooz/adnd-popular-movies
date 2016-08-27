@@ -1,6 +1,5 @@
 package com.abnd.mdiaz.popularmovies;
 
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -41,9 +40,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //No landscape mode
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //Get the Parcelable object
         Movie movie = getIntent().getParcelableExtra("selected_movie");
