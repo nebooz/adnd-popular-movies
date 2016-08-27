@@ -1,112 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_backdrop"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/backdrop_test" />
+        android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/title_bg"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/img_backdrop"
-        android:background="#0D47A1" />
+        <ImageView
+            android:id="@+id/img_backdrop"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/backdrop_test"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
 
-    <TextView
-        android:id="@+id/txt_title"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignBottom="@+id/title_bg"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/title_bg"
-        android:paddingBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="4dp"
-        android:layout_toEndOf="@+id/img_poster"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#FFFFFF"
-        android:textSize="21sp"
-        android:textStyle="bold"
-        tools:text="The Lord of The Rings: The Return of the King" />
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            tools:background="@color/defaultDarkColor"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp"
+            android:paddingLeft="150dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_backdrop"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:text="The Lord of The Rings: The Return of the King" />
 
-    <View
-        android:id="@+id/release_bg"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/title_bg"
-        android:background="#2196F3" />
+        <TextView
+            android:id="@+id/txt_release_date"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            tools:background="@color/defaultLightColor"
+            android:gravity="center_vertical"
+            android:paddingBottom="4dp"
+            android:paddingLeft="150dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_title"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:text="Release Date: December 3, 2015" />
 
-    <TextView
-        android:id="@+id/txt_release_date"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_alignStart="@+id/txt_title"
-        android:layout_alignTop="@+id/release_bg"
-        android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="14sp"
-        tools:text="Release Date: December 3rd, 2011"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:layout_alignBottom="@+id/release_bg"
-        android:layout_alignParentEnd="true" />
+        <TextView
+            android:id="@+id/txt_rating"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            tools:background="@color/defaultDarkColor"
+            android:gravity="center"
+            android:padding="6dp"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="9.9" />
 
-    <TextView
-        android:id="@+id/txt_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:background="#2196F3"
-        android:padding="6dp"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        tools:text="9.9" />
+        <TextView
+            android:id="@+id/txt_synopsis"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="64dp"
+            android:layout_marginTop="64dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#000000"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_release_date"
+            tools:background="#800D47A1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:text="After the re-emergence of the world's first mutant, world-destroyer Apocalypse, the X-Men must unite to defeat his extinction level plan." />
 
-    <TextView
-        android:id="@+id/txt_synopsis"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#BDBDBD"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:textStyle="italic"
-        android:background="#800D47A1"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:layout_marginTop="48dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        tools:text="After the re-emergence of the world's first mutant, world-destroyer Apocalypse, the X-Men must unite to defeat his extinction level plan."
-        android:layout_below="@+id/release_bg"
-        android:layout_centerHorizontal="true" />
+        <ImageView
+            android:id="@+id/img_poster"
+            android:layout_width="120dp"
+            android:layout_height="180dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="136dp"
+            android:elevation="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/test_image" />
 
-    <ImageView
-        android:id="@+id/img_poster"
-        android:layout_width="120dp"
-        android:layout_height="180dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/txt_rating"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="80dp"
-        android:background="#000000"
-        android:elevation="5dp"
-        tools:src="@drawable/test_image" />
+    </android.support.constraint.ConstraintLayout>
 
-</RelativeLayout>
+</ScrollView>

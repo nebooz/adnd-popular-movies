@@ -5,11 +5,11 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.abnd.mdiaz.popularmovies.model.Movie;
@@ -28,9 +28,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView movieRatingTextView;
     private TextView movieReleaseDateTextView;
     private TextView movieSynopsisTextView;
-    private RelativeLayout mainLayout;
-    private View titleBackground;
-    private View releaseBackground;
+    private ScrollView mainLayout;
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String SMALL_IMAGE_SIZE = "w92";
@@ -55,12 +53,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         String movieBackdropPath = movie.getBackdropPath();
         double movieRating = movie.getVoteAverage();
         String movieSynopsis = movie.getOverview();
-        String movieReleaseDate = movie.getReleaseDate();
+        final String movieReleaseDate = movie.getReleaseDate();
 
         //Assign all views...
-        mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
-        titleBackground = findViewById(R.id.title_bg);
-        releaseBackground = findViewById(R.id.release_bg);
+        mainLayout = (ScrollView) findViewById(R.id.main_layout);
         backdropImageView = (ImageView) findViewById(R.id.img_backdrop);
         posterImageView = (ImageView) findViewById(R.id.img_poster);
         movieTitleTextView = (TextView) findViewById(R.id.txt_title);
@@ -85,22 +81,36 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(this).load(fullPosterPath).into(
                 posterImageView,
                 PicassoPalette.with(fullPosterPath, posterImageView)
-                        .use(PicassoPalette.Profile.MUTED_DARK)
-                        .intoBackground(movieSynopsisTextView, PicassoPalette.Swatch.RGB)
-                        .intoBackground(movieRatingTextView, PicassoPalette.Swatch.RGB)
-                        .intoBackground(titleBackground, PicassoPalette.Swatch.RGB)
-
-                        .use(PicassoPalette.Profile.MUTED_LIGHT)
-                        .intoBackground(releaseBackground, PicassoPalette.Swatch.RGB)
-
                         .intoCallBack(new PicassoPalette.CallBack() {
                             @Override
                             public void onPaletteLoaded(Palette palette) {
-                                int darkColor = palette.getDarkMutedColor(ContextCompat.getColor(MovieDetailActivity.this,
-                                        R.color.defaultDarkColor));
+
+                                int darkColor = palette.getDarkMutedColor(ContextCompat.
+                                        getColor(MovieDetailActivity.this, R.color.defaultDarkColor));
+
+                                if (darkColor == -15906911) {
+                                    darkColor = palette.getDarkVibrantColor(ContextCompat.
+                                            getColor(MovieDetailActivity.this, R.color.defaultDarkColor));
+                                }
+
+                                int lightColor = palette.getLightMutedColor(ContextCompat.
+                                        getColor(MovieDetailActivity.this, R.color.defaultLightColor));
+
+                                if (lightColor == -14575885) {
+                                    lightColor = palette.getLightVibrantColor(ContextCompat.
+                                            getColor(MovieDetailActivity.this, R.color.defaultDarkColor));
+                                }
+
+                                movieRatingTextView.setBackgroundColor(darkColor);
+                                movieTitleTextView.setBackgroundColor(darkColor);
+                                movieReleaseDateTextView.setBackgroundColor(lightColor);
+
+                                int darkAlphaColor = ColorUtils.setAlphaComponent(darkColor, 128);
+                                movieSynopsisTextView.setBackgroundColor(darkAlphaColor);
 
                                 GradientDrawable gd = new GradientDrawable(
-                                        GradientDrawable.Orientation.TOP_BOTTOM, new int[]{Color.WHITE, darkColor});
+                                        GradientDrawable.Orientation.TOP_BOTTOM,
+                                        new int[]{Color.WHITE, darkColor});
 
                                 mainLayout.setBackground(gd);
                             }
