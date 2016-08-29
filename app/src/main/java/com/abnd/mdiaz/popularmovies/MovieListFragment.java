@@ -38,13 +38,13 @@ import static android.content.Context.WINDOW_SERVICE;
 
 public class MovieListFragment extends Fragment {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TOP_MOVIES_TAG = "Top";
     private static final String POP_MOVIES_TAG = "Pop";
     private static final String FAV_MOVIES_TAG = "Fav";
-    
+
     private static final int LANDSCAPE_GRID_COLUMNS = 5;
     private static final int PORTRAIT_GRID_COLUMNS = 3;
-    private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private RelativeLayout mProgressContainer;
@@ -52,7 +52,6 @@ public class MovieListFragment extends Fragment {
     private int gridColumns;
     private GridSpacing itemDecoration;
 
-    private AppCompatActivity mActivity;
     private ActionBar mActionBar;
 
     public MovieListFragment() {
@@ -63,7 +62,7 @@ public class MovieListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mActivity = (AppCompatActivity) getActivity();
+        AppCompatActivity mActivity = (AppCompatActivity) getActivity();
         mActionBar = mActivity.getSupportActionBar();
 
         setHasOptionsMenu(true);

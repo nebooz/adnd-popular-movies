@@ -15,21 +15,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Getting the fragment in place
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MovieListFragment fragment = new MovieListFragment();
-        fragmentTransaction.add(R.id.movie_list_fragment_container, fragment, "movieFrag");
-        fragmentTransaction.commit();
+        //Items were being duplicated on rotation.
+        if (savedInstanceState == null) {
 
-        //Without this line, trying to find the fragment returned null.
-        //fragmentManager.executePendingTransactions();
+            //Getting the fragment in place
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            MovieListFragment fragment = new MovieListFragment();
+            fragmentTransaction.add(R.id.movie_list_fragment_container, fragment, "movieFrag");
+            fragmentTransaction.commit();
 
-        //Get the frag.
-        //movieFrag = (MovieListFragment) fragmentManager.findFragmentByTag("movieFrag");
+            //Without this line, trying to find the fragment returned null.
+            //fragmentManager.executePendingTransactions();
 
-        //No landscape mode
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            //Get the frag.
+            //movieFrag = (MovieListFragment) fragmentManager.findFragmentByTag("movieFrag");
+
+            //No landscape mode
+            //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        }
 
     }
 
