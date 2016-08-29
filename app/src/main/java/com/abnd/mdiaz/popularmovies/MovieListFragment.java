@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -50,6 +52,9 @@ public class MovieListFragment extends Fragment {
     private int gridColumns;
     private GridSpacing itemDecoration;
 
+    private AppCompatActivity mActivity;
+    private ActionBar mActionBar;
+
     public MovieListFragment() {
         // Required empty public constructor
     }
@@ -57,6 +62,9 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mActivity = (AppCompatActivity) getActivity();
+        mActionBar = mActivity.getSupportActionBar();
 
         setHasOptionsMenu(true);
 
@@ -72,6 +80,7 @@ public class MovieListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
@@ -146,6 +155,18 @@ public class MovieListFragment extends Fragment {
 
         mAdapter.clearData();
         mAdapter.setMovieList(baseMovieList);
+
+        switch (mListType) {
+            case TOP_MOVIES_TAG:
+                mActionBar.setTitle("Top Movies");
+                break;
+            case POP_MOVIES_TAG:
+                mActionBar.setTitle("Popular Movies");
+                break;
+            case FAV_MOVIES_TAG:
+                mActionBar.setTitle("Favorite Movies");
+                break;
+        }
 
         mProgressContainer.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
