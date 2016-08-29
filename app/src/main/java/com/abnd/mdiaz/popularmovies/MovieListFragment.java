@@ -59,15 +59,27 @@ public class MovieListFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("ListType", mListType);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mListType = savedInstanceState.getString("ListType", POP_MOVIES_TAG);
+            Log.d(TAG, "List Type: " + mListType);
+        } else {
+            mListType = POP_MOVIES_TAG;
+        }
 
         AppCompatActivity mActivity = (AppCompatActivity) getActivity();
         mActionBar = mActivity.getSupportActionBar();
 
         setHasOptionsMenu(true);
 
-        mListType = POP_MOVIES_TAG;
 
         mAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
 
