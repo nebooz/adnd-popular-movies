@@ -197,16 +197,16 @@ public class MovieListFragment extends Fragment {
 
         switch (listType) {
             case POP_MOVIES_TAG:
-                call = apiService.getPopularMovies(SensitiveInfo.getApiKey());
+                call = apiService.getPopularMovies(SensitiveInfo.getMoviesApiKey());
                 break;
             case TOP_MOVIES_TAG:
-                call = apiService.getTopRatedMovies(SensitiveInfo.getApiKey());
+                call = apiService.getTopRatedMovies(SensitiveInfo.getMoviesApiKey());
                 break;
             case FAV_MOVIES_TAG:
-                call = apiService.getTopRatedMovies(SensitiveInfo.getApiKey());
+                call = apiService.getTopRatedMovies(SensitiveInfo.getMoviesApiKey());
                 break;
             default:
-                call = apiService.getPopularMovies(SensitiveInfo.getApiKey());
+                call = apiService.getPopularMovies(SensitiveInfo.getMoviesApiKey());
                 break;
         }
 
