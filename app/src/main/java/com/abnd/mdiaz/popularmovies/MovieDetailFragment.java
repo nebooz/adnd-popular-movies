@@ -69,8 +69,6 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-
-
         //Assign all views...
         mainLayout = (ScrollView) view.findViewById(R.id.main_layout);
         backdropImageView = (ImageView) view.findViewById(R.id.img_backdrop);

@@ -89,6 +89,12 @@ public class MovieListFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        getMovieList(mListType);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -110,8 +116,6 @@ public class MovieListFragment extends Fragment {
 
         mProgressContainer.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
-
-        getMovieList(mListType);
 
         return view;
     }
