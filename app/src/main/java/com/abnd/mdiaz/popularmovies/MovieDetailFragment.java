@@ -5,9 +5,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,9 @@ import android.widget.TextView;
 
 import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.github.florent37.picassopalette.PicassoPalette;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -24,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
 
     private ImageView backdropImageView;
     private ImageView posterImageView;
@@ -141,8 +146,28 @@ public class MovieDetailFragment extends Fragment {
                         })
         );
 
+        YouTubePlayerSupportFragment youtubeVideoFragment = YouTubePlayerSupportFragment.newInstance();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.youtube_fragment_container, youtubeVideoFragment, "ASDF").commit();
+
+        youtubeVideoFragment.initialize(SensitiveInfo.getYoutubeApiKeyApiKey(), this);
 
         return view;
+    }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
+                                        boolean wasRestored) {
+        if (!wasRestored) {
+            player.cueVideo("OL_eIZjiLUk");
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+        Log.d("ASDF", "NOPE" + youTubeInitializationResult);
+
     }
 
     private static String dateFormat(String releaseDate) {
