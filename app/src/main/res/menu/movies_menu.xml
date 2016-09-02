@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_top_movies"
-        android:title="Top Movies"
+        android:title="@string/top_movies"
         app:showAsAction="never"/>
     <item android:id="@+id/menu_pop_movies"
-         android:title="Popular Movies"
+         android:title="@string/popular_movies"
         app:showAsAction="never"/>
     <item android:id="@+id/menu_fav_movies"
-        android:title="Favorite Movies"
+        android:title="@string/favorite_movies"
         app:showAsAction="never"/>
 </menu>

@@ -4,4 +4,14 @@
     android:id="@+id/movie_list_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.abnd.mdiaz.popularmovies.MainActivity" />
+    tools:context="com.abnd.mdiaz.popularmovies.MainActivity">
+
+    <TextView
+        android:id="@+id/txt_no_internet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/no_internet" />
+
+</FrameLayout>

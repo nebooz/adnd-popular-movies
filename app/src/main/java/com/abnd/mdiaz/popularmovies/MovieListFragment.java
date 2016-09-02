@@ -4,7 +4,6 @@ package com.abnd.mdiaz.popularmovies;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,7 +18,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.abnd.mdiaz.popularmovies.model.Movie;
@@ -47,7 +46,7 @@ public class MovieListFragment extends Fragment {
     private static final int PORTRAIT_GRID_COLUMNS = 3;
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
-    private RelativeLayout mProgressContainer;
+    private ProgressBar mProgressBar;
     private String mListType;
     private int gridColumns;
     private GridSpacing itemDecoration;
@@ -80,7 +79,6 @@ public class MovieListFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-
         mAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
 
         //Check the screen orientation to alter the number of columns in the GridLayout
@@ -101,7 +99,7 @@ public class MovieListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
-        mProgressContainer = (RelativeLayout) view.findViewById(R.id.progress_container);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), gridColumns);
@@ -114,8 +112,8 @@ public class MovieListFragment extends Fragment {
         */
         mRecyclerView.addItemDecoration(itemDecoration);
 
-        mProgressContainer.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        //mRecyclerView.setVisibility(View.GONE);
 
         return view;
     }
@@ -130,11 +128,6 @@ public class MovieListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
-
-        if (itemId == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(getActivity());
-            return true;
-        }
 
         switch (itemId) {
             case R.id.menu_top_movies:
@@ -183,7 +176,7 @@ public class MovieListFragment extends Fragment {
                 break;
         }
 
-        mProgressContainer.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
 
     }

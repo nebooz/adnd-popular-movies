@@ -1,8 +1,13 @@
 package com.abnd.mdiaz.popularmovies;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,27 +22,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null) { // saved instance state, fragment may exist
-            // look up the instance that already exists by tag
-            movieListFragment = (MovieListFragment)
-                    getSupportFragmentManager().findFragmentByTag(MOVIE_LIST_FRAGMENT_TAG);
-        } else if (movieListFragment == null) {
-            // only create fragment if they haven't been instantiated already
-            movieListFragment = new MovieListFragment();
-        }
+        if (checkConnectivity()) {
 
-        if (!movieListFragment.isInLayout()) {
-            Log.d(TAG, "MovieListFragment is not in layout.");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.movie_list_fragment_container, movieListFragment, MOVIE_LIST_FRAGMENT_TAG)
-                    .commit();
+            if (savedInstanceState != null) { // saved instance state, fragment may exist
+                // look up the instance that already exists by tag
+                movieListFragment = (MovieListFragment)
+                        getSupportFragmentManager().findFragmentByTag(MOVIE_LIST_FRAGMENT_TAG);
+            } else if (movieListFragment == null) {
+                // only create fragment if they haven't been instantiated already
+                movieListFragment = new MovieListFragment();
+            }
+
+            if (!movieListFragment.isInLayout()) {
+                Log.d(TAG, "MovieListFragment is not in layout.");
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.movie_list_fragment_container, movieListFragment, MOVIE_LIST_FRAGMENT_TAG)
+                        .commit();
+            }
+
+        } else {
+
+            TextView noInternet = (TextView) findViewById(R.id.txt_no_internet);
+            noInternet.setVisibility(View.VISIBLE);
+
         }
 
     }
 
+    private boolean checkConnectivity() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         Log.d(TAG, "MainActivity has been resumed.");
     }
