@@ -9,13 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.abnd.mdiaz.popularmovies.fragments.MovieListFragment;
+
 public class MainActivity extends AppCompatActivity {
 
-    private MovieListFragment movieListFragment;
-
     private static final String TAG = MainActivity.class.getSimpleName();
-
     private final String MOVIE_LIST_FRAGMENT_TAG = "movieFrag";
+    private MovieListFragment movieListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

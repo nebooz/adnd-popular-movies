@@ -1,4 +1,4 @@
-package com.abnd.mdiaz.popularmovies;
+package com.abnd.mdiaz.popularmovies.fragments;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.abnd.mdiaz.popularmovies.R;
 import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
@@ -26,6 +27,10 @@ import java.util.Date;
 
 public class MovieDetailFragment extends Fragment {
 
+    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String SMALL_IMAGE_SIZE = "w92";
+    private static final String MEDIUM_IMAGE_SIZE = "w185";
+    private static final String LARGE_IMAGE_SIZE = "w500";
     private ImageView backdropImageView;
     private ImageView posterImageView;
     private TextView movieTitleTextView;
@@ -33,18 +38,32 @@ public class MovieDetailFragment extends Fragment {
     private TextView movieReleaseDateTextView;
     private TextView movieSynopsisTextView;
     private ScrollView mainLayout;
-
-    private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String SMALL_IMAGE_SIZE = "w92";
-    private static final String MEDIUM_IMAGE_SIZE = "w185";
-    private static final String LARGE_IMAGE_SIZE = "w500";
-
     private String mMovieName;
     private String mMoviePosterPath;
     private String mMovieBackdropPath;
     private double mMovieRating;
     private String mMovieSynopsis;
     private String mMovieReleaseDate;
+
+    private static String dateFormat(String releaseDate) {
+
+        String inputString = "yyyy-MM-dd";
+        String outputString = "MMMM dd, yyyy";
+
+        SimpleDateFormat parser = new SimpleDateFormat(inputString);
+        SimpleDateFormat properForm = new SimpleDateFormat(outputString);
+
+        String formattedDate = null;
+
+        try {
+            Date properDate = parser.parse(releaseDate);
+            formattedDate = properForm.format(properDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,26 +162,6 @@ public class MovieDetailFragment extends Fragment {
 
 
         return view;
-    }
-
-    private static String dateFormat(String releaseDate) {
-
-        String inputString = "yyyy-MM-dd";
-        String outputString = "MMMM dd, yyyy";
-
-        SimpleDateFormat parser = new SimpleDateFormat(inputString);
-        SimpleDateFormat properForm = new SimpleDateFormat(outputString);
-
-        String formattedDate = null;
-
-        try {
-            Date properDate = parser.parse(releaseDate);
-            formattedDate = properForm.format(properDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return formattedDate;
     }
 
 }

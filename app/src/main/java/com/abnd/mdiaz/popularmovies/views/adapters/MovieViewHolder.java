@@ -1,4 +1,4 @@
-package com.abnd.mdiaz.popularmovies;
+package com.abnd.mdiaz.popularmovies.views.adapters;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -6,18 +6,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.abnd.mdiaz.popularmovies.MovieDetailActivity;
+import com.abnd.mdiaz.popularmovies.R;
 import com.abnd.mdiaz.popularmovies.model.Movie;
 
 import java.util.List;
 
-/**
- * Created by neboo on 23-Aug-16.
- */
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    private List<Movie> mMovieList;
     protected ImageView movieThumbnail;
     protected TextView movieName;
+    private List<Movie> mMovieList;
 
     public MovieViewHolder(View itemView, List<Movie> movieList) {
         super(itemView);

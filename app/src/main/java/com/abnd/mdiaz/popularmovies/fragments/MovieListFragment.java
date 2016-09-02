@@ -1,4 +1,4 @@
-package com.abnd.mdiaz.popularmovies;
+package com.abnd.mdiaz.popularmovies.fragments;
 
 
 import android.os.Bundle;
@@ -21,6 +21,11 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.abnd.mdiaz.popularmovies.utils.GridSpacing;
+import com.abnd.mdiaz.popularmovies.MainActivity;
+import com.abnd.mdiaz.popularmovies.views.adapters.MovieAdapter;
+import com.abnd.mdiaz.popularmovies.R;
+import com.abnd.mdiaz.popularmovies.utils.SensitiveInfo;
 import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
 import com.abnd.mdiaz.popularmovies.rest.ApiClient;
@@ -28,6 +33,7 @@ import com.abnd.mdiaz.popularmovies.rest.ApiInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -131,14 +137,14 @@ public class MovieListFragment extends Fragment {
 
         switch (itemId) {
             case R.id.menu_top_movies:
-                if (mListType == TOP_MOVIES_TAG) {
+                if (Objects.equals(mListType, TOP_MOVIES_TAG)) {
                     Toast.makeText(getContext(), "You are looking at the Top Movies list.", Toast.LENGTH_SHORT).show();
                     break;
                 }
                 mListType = TOP_MOVIES_TAG;
                 break;
             case R.id.menu_pop_movies:
-                if (mListType == POP_MOVIES_TAG) {
+                if (Objects.equals(mListType, POP_MOVIES_TAG)) {
                     Toast.makeText(getContext(), "You are looking at the Popular Movies list.", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -146,7 +152,7 @@ public class MovieListFragment extends Fragment {
                 break;
             case R.id.menu_fav_movies:
                 //TODO: Change to Fav when the DB is implemented!
-                if (mListType == FAV_MOVIES_TAG) {
+                if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
                     Toast.makeText(getContext(), "You are looking at the Favorite Movies list.", Toast.LENGTH_SHORT).show();
                     break;
                 }

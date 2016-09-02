@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="120dp"
     android:layout_height="216dp"
-    cardview:cardCornerRadius="6dp"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:selectableItemBackground">
+    android:foreground="?android:selectableItemBackground"
+    cardview:cardCornerRadius="6dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,20 +18,20 @@
             android:layout_width="120dp"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/test_image" />
+            tools:src="@drawable/test_image" />
 
         <TextView
             android:id="@+id/card_title"
-            android:padding="4dp"
-            android:textStyle="bold"
             android:layout_width="120dp"
             android:layout_height="36dp"
             android:layout_below="@+id/card_thumbnail"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:padding="4dp"
             android:textAppearance="?android:textAppearanceSmall"
+            android:textSize="12sp"
+            android:textStyle="bold"
             tools:text="TESTTEXTTESTTEXTTESTTEXTTESTTEXTTESTTEXT" />
 
     </RelativeLayout>

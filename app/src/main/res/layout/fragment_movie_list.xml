@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/movie_list_fragment"
@@ -5,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.abnd.mdiaz.popularmovies.MovieListFragment">
+    tools:context="com.abnd.mdiaz.popularmovies.fragments.MovieListFragment">
 
     <ProgressBar
         android:id="@+id/movie_list_progress_bar"
