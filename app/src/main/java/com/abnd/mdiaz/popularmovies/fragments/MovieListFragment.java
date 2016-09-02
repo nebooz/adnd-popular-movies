@@ -25,7 +25,6 @@ import com.abnd.mdiaz.popularmovies.utils.GridSpacing;
 import com.abnd.mdiaz.popularmovies.MainActivity;
 import com.abnd.mdiaz.popularmovies.views.adapters.MovieAdapter;
 import com.abnd.mdiaz.popularmovies.R;
-import com.abnd.mdiaz.popularmovies.utils.SensitiveInfo;
 import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
 import com.abnd.mdiaz.popularmovies.rest.ApiClient;
