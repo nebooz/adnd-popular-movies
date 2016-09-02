@@ -1,5 +1,6 @@
 package com.abnd.mdiaz.popularmovies;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,9 +14,6 @@ import java.util.List;
  * Created by neboo on 23-Aug-16.
  */
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-    public OnMovieSelectedInteractionListener mListener;
-
 
     private List<Movie> mMovieList;
     protected ImageView movieThumbnail;
@@ -34,25 +32,14 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
     @Override
     public void onClick(View view) {
 
-        mListener = (OnMovieSelectedInteractionListener) view.getContext();
-
         int position = getAdapterPosition();
         Movie selectedMovie = mMovieList.get(position);
 
-        if (mListener != null) {
-            mListener.onMovieSelectedInteraction(selectedMovie);
-        }
+        Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
+        intent.putExtra("selected_movie", selectedMovie);
 
-        //Intent intent = new Intent(view.getContext(), MovieDetailActivity.class);
-        //intent.putExtra("selected_movie", selectedMovie);
-
-        //view.getContext().startActivity(intent);
+        view.getContext().startActivity(intent);
 
     }
 
-
-    public interface OnMovieSelectedInteractionListener {
-        // TODO: Update argument type and name
-        void onMovieSelectedInteraction(Movie movie);
-    }
 }

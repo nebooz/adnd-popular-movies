@@ -215,6 +215,7 @@ public class MovieListFragment extends Fragment {
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
                 List<Movie> movieList = response.body().getResults();
                 loadAdapter(movieList);
+                //For some reason this method gets executed even when the activity is resumed...
                 Log.d(TAG, "(mMovieList) Number of movies received: " + movieList.size());
             }
 

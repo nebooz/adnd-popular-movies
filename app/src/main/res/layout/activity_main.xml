@@ -4,6 +4,4 @@
     android:id="@+id/movie_list_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     tools:context="com.abnd.mdiaz.popularmovies.MainActivity" />
