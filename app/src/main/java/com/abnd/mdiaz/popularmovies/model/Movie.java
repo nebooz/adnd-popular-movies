@@ -15,6 +15,15 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public class Movie implements Parcelable{
 
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -57,9 +66,7 @@ public class Movie implements Parcelable{
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
-
     private int lightColor;
-    private int darkColor;
 
     /*public RetroMovie(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds, Integer id,
                       String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
@@ -79,6 +86,22 @@ public class Movie implements Parcelable{
         this.video = video;
         this.voteAverage = voteAverage;
     }*/
+    private int darkColor;
+
+    public Movie() {
+
+    }
+
+    //Parcelable Part
+    public Movie(Parcel in) {
+        title = in.readString();
+        releaseDate = in.readString();
+        voteAverage = in.readDouble();
+        posterPath = in.readString();
+        backdropPath = in.readString();
+        overview = in.readString();
+        id = in.readInt();
+    }
 
     /**
      * @return The posterPath
@@ -276,20 +299,6 @@ public class Movie implements Parcelable{
         this.voteAverage = voteAverage;
     }
 
-    public Movie() {
-
-    }
-
-    //Parcelable Part
-    public Movie(Parcel in){
-        title = in.readString();
-        releaseDate = in.readString();
-        voteAverage = in.readDouble();
-        posterPath = in.readString();
-        backdropPath = in.readString();
-        overview = in.readString();
-    }
-
     @Override
     public int describeContents(){
         return 0;
@@ -303,15 +312,6 @@ public class Movie implements Parcelable{
         dest.writeString(posterPath);
         dest.writeString(backdropPath);
         dest.writeString(overview);
+        dest.writeInt(id);
     }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 }

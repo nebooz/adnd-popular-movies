@@ -1,32 +1,47 @@
 package com.abnd.mdiaz.popularmovies.fragments;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.abnd.mdiaz.popularmovies.R;
 import com.abnd.mdiaz.popularmovies.model.Movie;
+import com.abnd.mdiaz.popularmovies.model.Trailer;
+import com.abnd.mdiaz.popularmovies.model.TrailersResponse;
+import com.abnd.mdiaz.popularmovies.rest.ApiClient;
+import com.abnd.mdiaz.popularmovies.rest.ApiInterface;
+import com.abnd.mdiaz.popularmovies.utils.SensitiveInfo;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieDetailFragment extends Fragment {
 
+    private static final String TAG = MovieDetailFragment.class.getSimpleName();
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String SMALL_IMAGE_SIZE = "w92";
     private static final String MEDIUM_IMAGE_SIZE = "w185";
@@ -37,13 +52,24 @@ public class MovieDetailFragment extends Fragment {
     private TextView movieRatingTextView;
     private TextView movieReleaseDateTextView;
     private TextView movieSynopsisTextView;
+    private TextView trailerHeader;
     private ScrollView mainLayout;
     private String mMovieName;
+    private int mMovieId;
     private String mMoviePosterPath;
     private String mMovieBackdropPath;
     private double mMovieRating;
     private String mMovieSynopsis;
     private String mMovieReleaseDate;
+
+    private int mDarkColor;
+    private int mLightColor;
+
+    private LinearLayout mTrailerContainer;
+
+    public MovieDetailFragment() {
+        // Required empty public constructor
+    }
 
     private static String dateFormat(String releaseDate) {
 
@@ -72,6 +98,7 @@ public class MovieDetailFragment extends Fragment {
         Movie movie = getArguments().getParcelable("selectedMovie");
 
         mMovieName = movie.getTitle();
+        mMovieId = movie.getId();
         mMoviePosterPath = movie.getPosterPath();
         mMovieBackdropPath = movie.getBackdropPath();
         mMovieRating = movie.getVoteAverage();
@@ -80,6 +107,55 @@ public class MovieDetailFragment extends Fragment {
 
         //Proper date
         mMovieReleaseDate = this.getString(R.string.release_date) + dateFormat(preFixedReleaseDate);
+
+    }
+
+    private void getTrailerList(int movieId) {
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<TrailersResponse> call = apiService.getMovieTrailers(movieId, SensitiveInfo.getMoviesApiKey());
+
+        call.enqueue(new Callback<TrailersResponse>() {
+            @Override
+            public void onResponse(Call<TrailersResponse> call, Response<TrailersResponse> response) {
+                List<Trailer> trailerList = response.body().getTrailers();
+
+                for (final Trailer currentTrailer : trailerList) {
+
+                    TextView currentTrailerView = (TextView) LayoutInflater.from(getContext())
+                            .inflate(R.layout.movie_detail_trailer_view, mTrailerContainer, false);
+
+                    currentTrailerView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + currentTrailer.getKey()));
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException ex) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("http://www.youtube.com/watch?v=" + currentTrailer.getKey()));
+                                startActivity(intent);
+                            }
+                        }
+                    });
+
+                    //currentTrailerView.setClickable(true);
+                    //currentTrailerView.setBackgroundResource(backgroundResource);
+                    currentTrailerView.setText(currentTrailer.getName());
+                    mTrailerContainer.addView(currentTrailerView);
+                }
+
+                Log.d(TAG, "Number of trailers received: " + trailerList.size());
+            }
+
+            @Override
+            public void onFailure(Call<TrailersResponse> call, Throwable t) {
+                // Log error here since request failed
+                Log.e(TAG, t.toString());
+            }
+        });
 
     }
 
@@ -96,6 +172,7 @@ public class MovieDetailFragment extends Fragment {
         movieRatingTextView = (TextView) view.findViewById(R.id.txt_rating);
         movieReleaseDateTextView = (TextView) view.findViewById(R.id.txt_release_date);
         movieSynopsisTextView = (TextView) view.findViewById(R.id.txt_synopsis);
+        trailerHeader = (TextView) view.findViewById(R.id.txt_trailer_header);
 
         //Assign values to views...
         movieTitleTextView.setText(mMovieName);
@@ -124,42 +201,47 @@ public class MovieDetailFragment extends Fragment {
                                 int defaultLightColor = ContextCompat.getColor(getContext(),
                                         R.color.defaultLightColor);
 
-                                int darkColor = palette.getDarkMutedColor(ContextCompat.
+                                mDarkColor = palette.getDarkMutedColor(ContextCompat.
                                         getColor(getContext(), R.color.defaultDarkColor));
 
-                                if (darkColor == defaultDarkColor) {
-                                    darkColor = palette.getDarkVibrantColor(ContextCompat.
+                                if (mDarkColor == defaultDarkColor) {
+                                    mDarkColor = palette.getDarkVibrantColor(ContextCompat.
                                             getColor(getContext(), R.color.defaultDarkColor));
                                 }
 
-                                int lightColor = palette.getLightMutedColor(ContextCompat.
+                                mLightColor = palette.getLightMutedColor(ContextCompat.
                                         getColor(getContext(), R.color.defaultLightColor));
 
-                                if (lightColor == defaultLightColor) {
-                                    lightColor = palette.getLightVibrantColor(ContextCompat.
+                                if (mLightColor == defaultLightColor) {
+                                    mLightColor = palette.getLightVibrantColor(ContextCompat.
                                             getColor(getContext(), R.color.defaultDarkColor));
                                 }
 
-                                movieRatingTextView.setBackgroundColor(darkColor);
+                                movieRatingTextView.setBackgroundColor(mDarkColor);
                                 movieRatingTextView.setShadowLayer(10, 0, 0, Color.BLACK);
 
-                                movieTitleTextView.setBackgroundColor(darkColor);
+                                movieTitleTextView.setBackgroundColor(mDarkColor);
                                 movieTitleTextView.setShadowLayer(10, 0, 0, Color.BLACK);
 
-                                movieReleaseDateTextView.setBackgroundColor(lightColor);
+                                movieReleaseDateTextView.setBackgroundColor(mLightColor);
 
-                                int darkAlphaColor = ColorUtils.setAlphaComponent(darkColor, 128);
+                                int darkAlphaColor = ColorUtils.setAlphaComponent(mDarkColor, 128);
                                 movieSynopsisTextView.setBackgroundColor(darkAlphaColor);
 
                                 GradientDrawable gd = new GradientDrawable(
                                         GradientDrawable.Orientation.TOP_BOTTOM,
-                                        new int[]{Color.WHITE, lightColor});
+                                        new int[]{Color.WHITE, mLightColor});
 
                                 mainLayout.setBackground(gd);
+
+                                trailerHeader.setBackgroundColor(mDarkColor);
+
                             }
                         })
         );
 
+        mTrailerContainer = (LinearLayout) view.findViewById(R.id.trailer_list_container);
+        getTrailerList(mMovieId);
 
         return view;
     }

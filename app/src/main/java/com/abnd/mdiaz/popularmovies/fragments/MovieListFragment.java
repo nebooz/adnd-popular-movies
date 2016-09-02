@@ -21,14 +21,14 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.abnd.mdiaz.popularmovies.utils.GridSpacing;
-import com.abnd.mdiaz.popularmovies.MainActivity;
-import com.abnd.mdiaz.popularmovies.views.adapters.MovieAdapter;
 import com.abnd.mdiaz.popularmovies.R;
 import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
 import com.abnd.mdiaz.popularmovies.rest.ApiClient;
 import com.abnd.mdiaz.popularmovies.rest.ApiInterface;
+import com.abnd.mdiaz.popularmovies.utils.GridSpacing;
+import com.abnd.mdiaz.popularmovies.utils.SensitiveInfo;
+import com.abnd.mdiaz.popularmovies.views.adapters.MovieAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import static android.content.Context.WINDOW_SERVICE;
 
 public class MovieListFragment extends Fragment {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MovieListFragment.class.getSimpleName();
     private static final String TOP_MOVIES_TAG = "Top";
     private static final String POP_MOVIES_TAG = "Pop";
     private static final String FAV_MOVIES_TAG = "Fav";
@@ -92,12 +92,6 @@ public class MovieListFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        getMovieList(mListType);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -118,7 +112,8 @@ public class MovieListFragment extends Fragment {
         mRecyclerView.addItemDecoration(itemDecoration);
 
         mProgressBar.setVisibility(View.VISIBLE);
-        //mRecyclerView.setVisibility(View.GONE);
+
+        getMovieList(mListType);
 
         return view;
     }
@@ -214,7 +209,7 @@ public class MovieListFragment extends Fragment {
                 List<Movie> movieList = response.body().getResults();
                 loadAdapter(movieList);
                 //For some reason this method gets executed even when the activity is resumed...
-                Log.d(TAG, "(mMovieList) Number of movies received: " + movieList.size());
+                Log.d(TAG, "Number of movies received: " + movieList.size());
             }
 
             @Override
