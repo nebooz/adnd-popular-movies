@@ -6,18 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,7 +22,7 @@ import com.abnd.mdiaz.popularmovies.model.Movie;
 import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
 import com.abnd.mdiaz.popularmovies.rest.ApiClient;
 import com.abnd.mdiaz.popularmovies.rest.ApiInterface;
-import com.abnd.mdiaz.popularmovies.utils.GridSpacing;
+import com.abnd.mdiaz.popularmovies.utils.MarginDecoration;
 import com.abnd.mdiaz.popularmovies.utils.SensitiveInfo;
 import com.abnd.mdiaz.popularmovies.views.adapters.MovieAdapter;
 
@@ -38,8 +34,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.Context.WINDOW_SERVICE;
-
 public class MovieListFragment extends Fragment {
 
     private static final String TAG = MovieListFragment.class.getSimpleName();
@@ -47,15 +41,10 @@ public class MovieListFragment extends Fragment {
     private static final String POP_MOVIES_TAG = "Pop";
     private static final String FAV_MOVIES_TAG = "Fav";
 
-    private static final int LANDSCAPE_GRID_COLUMNS = 5;
-    private static final int PORTRAIT_GRID_COLUMNS = 3;
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private ProgressBar mProgressBar;
     private String mListType;
-    private int gridColumns;
-    private GridSpacing itemDecoration;
-
     private ActionBar mActionBar;
 
     public MovieListFragment() {
@@ -86,9 +75,6 @@ public class MovieListFragment extends Fragment {
 
         mAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
 
-        //Check the screen orientation to alter the number of columns in the GridLayout
-        checkOrientation();
-
     }
 
     @Override
@@ -101,15 +87,8 @@ public class MovieListFragment extends Fragment {
         mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), gridColumns);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new MarginDecoration(getContext()));
         mRecyclerView.setAdapter(mAdapter);
-
-        /*
-        I searched online for a way to adjust the column spacing for the grid view so it is
-        perfectly centered... this is doing a good job, but it is not exact.
-        */
-        mRecyclerView.addItemDecoration(itemDecoration);
 
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -219,21 +198,6 @@ public class MovieListFragment extends Fragment {
             }
         });
 
-    }
-
-    private void checkOrientation() {
-        Display display = ((WindowManager) getContext().getSystemService(WINDOW_SERVICE))
-                .getDefaultDisplay();
-
-        int orientation = display.getRotation();
-
-        if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
-            gridColumns = LANDSCAPE_GRID_COLUMNS;
-            itemDecoration = new GridSpacing(getContext(), R.dimen.item_offset_landscape);
-        } else {
-            gridColumns = PORTRAIT_GRID_COLUMNS;
-            itemDecoration = new GridSpacing(getContext(), R.dimen.item_offset_portrait);
-        }
     }
 
 }

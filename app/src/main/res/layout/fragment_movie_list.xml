@@ -14,12 +14,13 @@
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.abnd.mdiaz.popularmovies.utils.AutofitRecyclerView
         android:id="@+id/main_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:padding="@dimen/item_offset_portrait"
+        android:columnWidth="@dimen/movie_list_card_width"
+        android:padding="@dimen/item_margin"
         android:visibility="gone" />
 
 </LinearLayout>
