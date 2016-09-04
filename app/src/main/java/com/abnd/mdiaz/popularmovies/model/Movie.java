@@ -14,6 +14,7 @@ import javax.annotation.Generated;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 @Generated("org.jsonschema2pojo")
 
@@ -47,6 +48,7 @@ public class Movie extends RealmObject implements Parcelable {
     private List<Integer> genreIds = new ArrayList<Integer>();
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int movieId;
     @SerializedName("original_title")
     @Expose

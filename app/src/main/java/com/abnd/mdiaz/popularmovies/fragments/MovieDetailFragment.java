@@ -41,6 +41,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,6 +68,7 @@ public class MovieDetailFragment extends Fragment {
     private double mMovieRating;
     private String mMovieSynopsis;
     private String mMovieReleaseDate;
+    private boolean mFavoriteMovie;
 
     private Movie mMovie;
     private Realm realm;
@@ -157,8 +159,6 @@ public class MovieDetailFragment extends Fragment {
                         }
                     });
 
-                    //currentTrailerView.setClickable(true);
-                    //currentTrailerView.setBackgroundResource(backgroundResource);
                     currentTrailerView.setText(currentTrailer.getName());
                     mTrailerContainer.addView(currentTrailerView);
                 }
@@ -269,24 +269,58 @@ public class MovieDetailFragment extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
+        int currentMovieId = mMovie.getMovieId();
+
+        MenuItem addToFavorites = menu.findItem(R.id.menu_add_favs);
+        RealmResults<Movie> favCheck = realm.where(Movie.class).equalTo("movieId", currentMovieId).findAll();
+
+        if (favCheck.size() > 0) {
+            mFavoriteMovie = true;
+            addToFavorites.setTitle("Remove from Favorites");
+        }
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
 
         switch (itemId) {
             case R.id.menu_add_favs:
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        Movie realmMovie = realm.copyToRealm(mMovie);
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(getContext(), "Current movie added to Favorites!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                break;
+                if (!mFavoriteMovie) {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            Movie realmMovie = realm.copyToRealm(mMovie);
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(getContext(), "Current movie added to Favorites!", Toast.LENGTH_SHORT).show();
+                            getActivity().invalidateOptionsMenu();
+                        }
+                    });
+                    break;
+                } else {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            int currentMovieId = mMovie.getMovieId();
+                            Movie currentMovie = realm.where(Movie.class).equalTo("movieId", currentMovieId).findFirst();
+                            currentMovie.deleteFromRealm();
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(getContext(), "Current movie was removed from Favorites!", Toast.LENGTH_SHORT).show();
+                            getActivity().invalidateOptionsMenu();
+                        }
+                    });
+                    break;
+                }
 
         }
 

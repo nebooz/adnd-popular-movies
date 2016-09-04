@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abnd.mdiaz.popularmovies.R;
@@ -49,6 +50,7 @@ public class MovieListFragment extends Fragment {
     private ProgressBar mProgressBar;
     private String mListType;
     private ActionBar mActionBar;
+    private TextView mEmptyFavsMessage;
 
     private RealmResults<Movie> favMoviesList;
 
@@ -62,6 +64,15 @@ public class MovieListFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("ListType", mListType);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
+            getMovieList(mListType);
+        }
+        Log.d(TAG, "onResume: Movie List Fragment has resumed.");
     }
 
     @Override
@@ -90,6 +101,12 @@ public class MovieListFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: Movie List Fragment is on Pause.");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -98,6 +115,7 @@ public class MovieListFragment extends Fragment {
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
+        mEmptyFavsMessage = (TextView) getActivity().findViewById(R.id.txt_no_favs);
 
         mRecyclerView.addItemDecoration(new MarginDecoration(getContext()));
         mRecyclerView.setAdapter(mAdapter);
@@ -177,6 +195,13 @@ public class MovieListFragment extends Fragment {
         if (Objects.equals(listType, FAV_MOVIES_TAG)) {
 
             favMoviesList = realm.where(Movie.class).findAll();
+
+            if (favMoviesList.size() == 0) {
+                mEmptyFavsMessage.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyFavsMessage.setVisibility(View.GONE);
+            }
+
             loadAdapter(favMoviesList);
 
         } else {

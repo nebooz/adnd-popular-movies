@@ -11,7 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:visibility="gone"
-        android:text="@string/no_internet" />
+        android:padding="16dp"
+        android:text="@string/no_internet"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txt_no_favs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="The Favorite Movies list is empty. Add Movies to your favorites using the menu option on the top right."
+        android:visibility="gone" />
 
 </FrameLayout>
