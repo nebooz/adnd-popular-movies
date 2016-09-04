@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +50,10 @@ public class MovieListFragment extends Fragment {
     private String mListType;
     private ActionBar mActionBar;
 
+    private RealmResults<Movie> favMoviesList;
+
+    private Realm realm;
+
     public MovieListFragment() {
         // Required empty public constructor
     }
@@ -60,6 +67,11 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(getContext()).build();
+
+        // Create a new empty instance of Realm
+        realm = Realm.getInstance(realmConfiguration);
 
         if (savedInstanceState != null) {
             mListType = savedInstanceState.getString("ListType", POP_MOVIES_TAG);
@@ -100,7 +112,7 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.movies_menu, menu);
+        inflater.inflate(R.menu.movie_list_menu, menu);
     }
 
     @Override
@@ -162,42 +174,47 @@ public class MovieListFragment extends Fragment {
 
     private void getMovieList(String listType) {
 
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
+        if (Objects.equals(listType, FAV_MOVIES_TAG)) {
 
-        Call<MoviesResponse> call;
+            favMoviesList = realm.where(Movie.class).findAll();
+            loadAdapter(favMoviesList);
 
-        switch (listType) {
-            case POP_MOVIES_TAG:
-                call = apiService.getPopularMovies(SensitiveInfo.getMoviesApiKey());
-                break;
-            case TOP_MOVIES_TAG:
-                call = apiService.getTopRatedMovies(SensitiveInfo.getMoviesApiKey());
-                break;
-            case FAV_MOVIES_TAG:
-                call = apiService.getTopRatedMovies(SensitiveInfo.getMoviesApiKey());
-                break;
-            default:
-                call = apiService.getPopularMovies(SensitiveInfo.getMoviesApiKey());
-                break;
+        } else {
+
+            ApiInterface apiService =
+                    ApiClient.getClient().create(ApiInterface.class);
+
+            Call<MoviesResponse> call;
+
+            switch (listType) {
+                case POP_MOVIES_TAG:
+                    call = apiService.getPopularMovies(SensitiveInfo.getMoviesApiKey());
+                    break;
+                case TOP_MOVIES_TAG:
+                    call = apiService.getTopRatedMovies(SensitiveInfo.getMoviesApiKey());
+                    break;
+                default:
+                    call = apiService.getPopularMovies(SensitiveInfo.getMoviesApiKey());
+                    break;
+            }
+
+            call.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                    List<Movie> movieList = response.body().getResults();
+                    loadAdapter(movieList);
+                    //For some reason this method gets executed even when the activity is resumed...
+                    Log.d(TAG, "Number of movies received: " + movieList.size());
+                }
+
+                @Override
+                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                    // Log error here since request failed
+                    Log.e(TAG, t.toString());
+                }
+            });
+
         }
-
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                List<Movie> movieList = response.body().getResults();
-                loadAdapter(movieList);
-                //For some reason this method gets executed even when the activity is resumed...
-                Log.d(TAG, "Number of movies received: " + movieList.size());
-            }
-
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                // Log error here since request failed
-                Log.e(TAG, t.toString());
-            }
-        });
-
     }
 
 }

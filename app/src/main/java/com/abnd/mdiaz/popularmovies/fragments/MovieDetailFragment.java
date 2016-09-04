@@ -13,12 +13,16 @@ import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abnd.mdiaz.popularmovies.R;
 import com.abnd.mdiaz.popularmovies.model.Movie;
@@ -35,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,6 +67,9 @@ public class MovieDetailFragment extends Fragment {
     private double mMovieRating;
     private String mMovieSynopsis;
     private String mMovieReleaseDate;
+
+    private Movie mMovie;
+    private Realm realm;
 
     private int mDarkColor;
     private int mLightColor;
@@ -95,15 +104,22 @@ public class MovieDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Movie movie = getArguments().getParcelable("selectedMovie");
+        setHasOptionsMenu(true);
 
-        mMovieName = movie.getTitle();
-        mMovieId = movie.getId();
-        mMoviePosterPath = movie.getPosterPath();
-        mMovieBackdropPath = movie.getBackdropPath();
-        mMovieRating = movie.getVoteAverage();
-        mMovieSynopsis = movie.getOverview();
-        String preFixedReleaseDate = movie.getReleaseDate();
+        mMovie = getArguments().getParcelable("selectedMovie");
+
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(getContext()).build();
+
+        // Create a new empty instance of Realm
+        realm = Realm.getInstance(realmConfiguration);
+
+        mMovieName = mMovie.getTitle();
+        mMovieId = mMovie.getMovieId();
+        mMoviePosterPath = mMovie.getPosterPath();
+        mMovieBackdropPath = mMovie.getBackdropPath();
+        mMovieRating = mMovie.getVoteAverage();
+        mMovieSynopsis = mMovie.getOverview();
+        String preFixedReleaseDate = mMovie.getReleaseDate();
 
         //Proper date
         mMovieReleaseDate = this.getString(R.string.release_date) + dateFormat(preFixedReleaseDate);
@@ -244,6 +260,38 @@ public class MovieDetailFragment extends Fragment {
         getTrailerList(mMovieId);
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.movie_detail_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.menu_add_favs:
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        Movie realmMovie = realm.copyToRealm(mMovie);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getContext(), "Current movie added to Favorites!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+
     }
 
 }

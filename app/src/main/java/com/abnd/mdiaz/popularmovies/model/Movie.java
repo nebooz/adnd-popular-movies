@@ -12,8 +12,12 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+
 @Generated("org.jsonschema2pojo")
-public class Movie implements Parcelable{
+
+public class Movie extends RealmObject implements Parcelable {
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Movie createFromParcel(Parcel in) {
@@ -24,6 +28,7 @@ public class Movie implements Parcelable{
             return new Movie[size];
         }
     };
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -38,10 +43,11 @@ public class Movie implements Parcelable{
     private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private List<Integer> genreIds = new ArrayList<Integer>();
     @SerializedName("id")
     @Expose
-    private int id;
+    private int movieId;
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
@@ -66,32 +72,9 @@ public class Movie implements Parcelable{
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
-    private int lightColor;
-
-    /*public RetroMovie(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds, Integer id,
-                      String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
-                      Integer voteCount, Boolean video, Double voteAverage) {
-        this.posterPath = posterPath;
-        this.adult = adult;
-        this.overview = overview;
-        this.releaseDate = releaseDate;
-        this.genreIds = genreIds;
-        this.id = id;
-        this.originalTitle = originalTitle;
-        this.originalLanguage = originalLanguage;
-        this.title = title;
-        this.backdropPath = backdropPath;
-        this.popularity = popularity;
-        this.voteCount = voteCount;
-        this.video = video;
-        this.voteAverage = voteAverage;
-    }*/
-    private int darkColor;
-
     public Movie() {
 
     }
-
     //Parcelable Part
     public Movie(Parcel in) {
         title = in.readString();
@@ -100,7 +83,7 @@ public class Movie implements Parcelable{
         posterPath = in.readString();
         backdropPath = in.readString();
         overview = in.readString();
-        id = in.readInt();
+        movieId = in.readInt();
     }
 
     /**
@@ -176,15 +159,15 @@ public class Movie implements Parcelable{
     /**
      * @return The id
      */
-    public int getId() {
-        return id;
+    public int getMovieId() {
+        return movieId;
     }
 
     /**
      * @param id The id
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     /**
@@ -300,7 +283,7 @@ public class Movie implements Parcelable{
     }
 
     @Override
-    public int describeContents(){
+    public int describeContents() {
         return 0;
     }
 
@@ -312,6 +295,6 @@ public class Movie implements Parcelable{
         dest.writeString(posterPath);
         dest.writeString(backdropPath);
         dest.writeString(overview);
-        dest.writeInt(id);
+        dest.writeInt(movieId);
     }
 }
