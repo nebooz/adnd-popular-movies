@@ -206,6 +206,8 @@ public class MovieListFragment extends Fragment {
 
         } else {
 
+            mEmptyFavsMessage.setVisibility(View.GONE);
+
             ApiInterface apiService =
                     ApiClient.getClient().create(ApiInterface.class);
 
