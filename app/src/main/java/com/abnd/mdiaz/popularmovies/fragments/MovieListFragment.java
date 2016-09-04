@@ -154,7 +154,6 @@ public class MovieListFragment extends Fragment {
                 mListType = POP_MOVIES_TAG;
                 break;
             case R.id.menu_fav_movies:
-                //TODO: Change to Fav when the DB is implemented!
                 if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
                     Toast.makeText(getContext(), "You are looking at the Favorite Movies list.", Toast.LENGTH_SHORT).show();
                     break;

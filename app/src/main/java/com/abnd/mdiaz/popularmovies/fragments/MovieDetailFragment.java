@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
@@ -138,29 +139,48 @@ public class MovieDetailFragment extends Fragment {
         call.enqueue(new Callback<TrailersResponse>() {
             @Override
             public void onResponse(Call<TrailersResponse> call, Response<TrailersResponse> response) {
+
                 List<Trailer> trailerList = response.body().getTrailers();
 
-                for (final Trailer currentTrailer : trailerList) {
+                if (trailerList.size() == 0) {
 
-                    TextView currentTrailerView = (TextView) LayoutInflater.from(getContext())
+                    ConstraintLayout currentTrailerView = (ConstraintLayout) LayoutInflater.from(getContext())
                             .inflate(R.layout.movie_detail_trailer_view, mTrailerContainer, false);
 
-                    currentTrailerView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + currentTrailer.getKey()));
-                                startActivity(intent);
-                            } catch (ActivityNotFoundException ex) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse("http://www.youtube.com/watch?v=" + currentTrailer.getKey()));
-                                startActivity(intent);
-                            }
-                        }
-                    });
+                    TextView currentTrailerName = (TextView) currentTrailerView.findViewById(R.id.txt_trailer_element);
 
-                    currentTrailerView.setText(currentTrailer.getName());
+                    ImageView playImage = (ImageView) currentTrailerView.findViewById(R.id.img_trailer_play);
+                    playImage.setVisibility(View.GONE);
+                    currentTrailerName.setText("No trailers available.");
                     mTrailerContainer.addView(currentTrailerView);
+
+                } else {
+
+                    for (final Trailer currentTrailer : trailerList) {
+
+                        ConstraintLayout currentTrailerView = (ConstraintLayout) LayoutInflater.from(getContext())
+                                .inflate(R.layout.movie_detail_trailer_view, mTrailerContainer, false);
+
+                        TextView currentTrailerName = (TextView) currentTrailerView.findViewById(R.id.txt_trailer_element);
+
+                        currentTrailerView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + currentTrailer.getKey()));
+                                    startActivity(intent);
+                                } catch (ActivityNotFoundException ex) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse("http://www.youtube.com/watch?v=" + currentTrailer.getKey()));
+                                    startActivity(intent);
+                                }
+                            }
+                        });
+
+                        currentTrailerName.setText(currentTrailer.getName());
+                        mTrailerContainer.addView(currentTrailerView);
+                    }
+
                 }
 
                 Log.d(TAG, "Number of trailers received: " + trailerList.size());
