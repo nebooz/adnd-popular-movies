@@ -1,7 +1,6 @@
 package com.abnd.mdiaz.popularmovies;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -24,16 +23,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(selectedMovie.getTitle());
 
-        movieDetailFragment = new MovieDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("selectedMovie", selectedMovie);
-        movieDetailFragment.setArguments(bundle);
+        if (savedInstanceState == null) {
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.movie_detail_fragment_container, movieDetailFragment, MOVIE_DETAIL_FRAGMENT_TAG)
-                .commit();
+            movieDetailFragment = MovieDetailFragment.newInstance(selectedMovie);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.movie_detail_fragment_container, movieDetailFragment, MOVIE_DETAIL_FRAGMENT_TAG)
+                    .commit();
+
+        }
     }
 
     @Override

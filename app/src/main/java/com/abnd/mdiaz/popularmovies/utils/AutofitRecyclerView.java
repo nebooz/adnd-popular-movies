@@ -6,8 +6,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import com.abnd.mdiaz.popularmovies.R;
+
 public class AutofitRecyclerView extends RecyclerView {
+
     private GridLayoutManager manager;
+    private int itemMargin;
     private int columnWidth = -1;
 
     public AutofitRecyclerView(Context context) {
@@ -35,16 +39,24 @@ public class AutofitRecyclerView extends RecyclerView {
             array.recycle();
         }
 
+        itemMargin = context.getResources().getDimensionPixelSize(R.dimen.item_margin);
+
         manager = new GridLayoutManager(getContext(), 1);
+        manager.getSpanCount();
         setLayoutManager(manager);
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
+
         super.onMeasure(widthSpec, heightSpec);
+
         if (columnWidth > 0) {
-            int spanCount = Math.max(1, getMeasuredWidth() / (columnWidth + getPaddingLeft() + getPaddingRight()));
+
+            int spanCount = Math.max(1, getMeasuredWidth() / (columnWidth + (itemMargin * 2)));
             manager.setSpanCount(spanCount);
+
         }
+
     }
 }

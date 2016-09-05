@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +62,8 @@ public class MovieDetailFragment extends Fragment {
     private TextView movieReleaseDateTextView;
     private TextView movieSynopsisTextView;
     private TextView trailerHeader;
-    private ScrollView mainLayout;
+    private ScrollView movieDetailScrollView;
+    private ProgressBar mMovieDetailProgressBar;
     private String mMovieName;
     private int mMovieId;
     private String mMoviePosterPath;
@@ -81,6 +83,16 @@ public class MovieDetailFragment extends Fragment {
 
     public MovieDetailFragment() {
         // Required empty public constructor
+    }
+
+    public static MovieDetailFragment newInstance(Movie movie) {
+
+        MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("selectedMovie", movie);
+        movieDetailFragment.setArguments(args);
+        return movieDetailFragment;
+
     }
 
     private static String dateFormat(String releaseDate) {
@@ -111,11 +123,11 @@ public class MovieDetailFragment extends Fragment {
 
         mMovie = getArguments().getParcelable("selectedMovie");
 
+        // Create a new instance of Realm.
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(getContext()).build();
-
-        // Create a new empty instance of Realm
         realm = Realm.getInstance(realmConfiguration);
 
+        // Getting all values from selected movie.
         mMovieName = mMovie.getTitle();
         mMovieId = mMovie.getMovieId();
         mMoviePosterPath = mMovie.getPosterPath();
@@ -195,13 +207,25 @@ public class MovieDetailFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMovieDetailProgressBar.setVisibility(View.GONE);
+        movieDetailScrollView.setVisibility(View.VISIBLE);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         //Assign all views...
-        mainLayout = (ScrollView) view.findViewById(R.id.main_layout);
+        movieDetailScrollView = (ScrollView) view.findViewById(R.id.movie_detail_scrollview);
+        mMovieDetailProgressBar = (ProgressBar) view.findViewById(R.id.movie_detail_progress_bar);
+
+        mMovieDetailProgressBar.setVisibility(View.VISIBLE);
+        movieDetailScrollView.setVisibility(View.GONE);
+
         backdropImageView = (ImageView) view.findViewById(R.id.img_backdrop);
         posterImageView = (ImageView) view.findViewById(R.id.img_poster);
         movieTitleTextView = (TextView) view.findViewById(R.id.txt_title);
@@ -268,7 +292,7 @@ public class MovieDetailFragment extends Fragment {
                                         GradientDrawable.Orientation.TOP_BOTTOM,
                                         new int[]{Color.WHITE, mLightColor});
 
-                                mainLayout.setBackground(gd);
+                                movieDetailScrollView.setBackground(gd);
 
                                 trailerHeader.setBackgroundColor(mDarkColor);
 

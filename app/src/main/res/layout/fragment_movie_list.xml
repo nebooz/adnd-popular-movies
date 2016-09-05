@@ -12,7 +12,8 @@
         android:id="@+id/movie_list_progress_bar"
         style="?android:progressBarStyleLarge"
         android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_height="60dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/txt_no_favs"
@@ -29,7 +30,6 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:columnWidth="@dimen/movie_list_card_width"
-        android:padding="@dimen/item_margin"
         android:visibility="gone" />
 
 </LinearLayout>

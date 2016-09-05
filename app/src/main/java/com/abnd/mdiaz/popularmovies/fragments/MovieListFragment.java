@@ -117,13 +117,17 @@ public class MovieListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
-        mProgressBar.setVisibility(View.VISIBLE);
 
         mEmptyFavsMessage = (TextView) view.findViewById(R.id.txt_no_favs);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
 
-        mRecyclerView.addItemDecoration(new MarginDecoration(getContext()));
+        MarginDecoration marginDecoration = new MarginDecoration(getContext());
+
+        mRecyclerView.addItemDecoration(marginDecoration);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
 
         getMovieList(mListType);
 
