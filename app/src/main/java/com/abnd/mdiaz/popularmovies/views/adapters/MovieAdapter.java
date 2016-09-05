@@ -43,7 +43,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
         String fullPosterPath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + currentMovie.getPosterPath();
 
-        holder.movieName.setText(currentMovie.getTitle());
         Picasso.with(mContext).load(fullPosterPath).into(holder.movieThumbnail);
 
     }

@@ -10,48 +10,11 @@
     android:foreground="?android:selectableItemBackground"
     cardview:cardCornerRadius="6dp">
 
-    <android.support.constraint.ConstraintLayout
+    <ImageView
+        android:id="@+id/card_thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/card_thumbnail"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
-            cardview:layout_constraintBottom_toBottomOf="parent"
-            cardview:layout_constraintLeft_toLeftOf="parent"
-            cardview:layout_constraintRight_toRightOf="parent"
-            cardview:layout_constraintTop_toTopOf="parent"
-            cardview:layout_constraintVertical_bias="0.0"
-            tools:layout_constraintBottom_creator="1"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1"
-            tools:src="@drawable/test_image" />
-
-        <TextView
-            android:id="@+id/card_title"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:padding="3dp"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            cardview:layout_constraintBottom_toBottomOf="parent"
-            cardview:layout_constraintLeft_toLeftOf="parent"
-            cardview:layout_constraintRight_toRightOf="parent"
-            cardview:layout_constraintTop_toBottomOf="@id/card_thumbnail"
-            cardview:layout_constraintVertical_bias="0.0"
-            tools:layout_constraintBottom_creator="1"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1"
-            tools:text="TESTTEXTTESTTEXTTESTTEXTTESTTEXTTESTTEXT" />
-
-    </android.support.constraint.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/test_image" />
 
 </android.support.v7.widget.CardView>

@@ -40,9 +40,7 @@ public class AutofitRecyclerView extends RecyclerView {
         }
 
         itemMargin = context.getResources().getDimensionPixelSize(R.dimen.item_margin);
-
         manager = new GridLayoutManager(getContext(), 1);
-        manager.getSpanCount();
         setLayoutManager(manager);
     }
 
