@@ -202,7 +202,9 @@ public class MovieListFragment extends Fragment {
 
         if (Objects.equals(listType, FAV_MOVIES_TAG)) {
 
+
             RealmResults<Movie> favMoviesList = realm.where(Movie.class).findAll();
+            favMoviesList = favMoviesList.sort("title");
 
             if (favMoviesList.size() == 0) {
                 mEmptyFavsMessage.setVisibility(View.VISIBLE);
