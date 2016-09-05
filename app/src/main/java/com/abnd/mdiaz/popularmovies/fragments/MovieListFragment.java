@@ -52,8 +52,6 @@ public class MovieListFragment extends Fragment {
     private ActionBar mActionBar;
     private TextView mEmptyFavsMessage;
 
-    private RealmResults<Movie> favMoviesList;
-
     private Realm realm;
 
     public MovieListFragment() {
@@ -73,6 +71,11 @@ public class MovieListFragment extends Fragment {
             getMovieList(mListType);
         }
         Log.d(TAG, "onResume: Movie List Fragment has resumed.");
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -114,15 +117,17 @@ public class MovieListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
-        mEmptyFavsMessage = (TextView) getActivity().findViewById(R.id.txt_no_favs);
-
-        mRecyclerView.addItemDecoration(new MarginDecoration(getContext()));
-        mRecyclerView.setAdapter(mAdapter);
-
         mProgressBar.setVisibility(View.VISIBLE);
 
+        mEmptyFavsMessage = (TextView) view.findViewById(R.id.txt_no_favs);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
+
+        mRecyclerView.addItemDecoration(new MarginDecoration(getContext()));
+
         getMovieList(mListType);
+
+        mRecyclerView.setAdapter(mAdapter);
 
         return view;
     }
@@ -193,7 +198,7 @@ public class MovieListFragment extends Fragment {
 
         if (Objects.equals(listType, FAV_MOVIES_TAG)) {
 
-            favMoviesList = realm.where(Movie.class).findAll();
+            RealmResults<Movie> favMoviesList = realm.where(Movie.class).findAll();
 
             if (favMoviesList.size() == 0) {
                 mEmptyFavsMessage.setVisibility(View.VISIBLE);

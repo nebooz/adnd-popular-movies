@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/movie_list_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.abnd.mdiaz.popularmovies.MainActivity">
+    android:orientation="vertical"
+    tools:context="com.abnd.mdiaz.popularmovies.MovieListActivity">
 
     <TextView
         android:id="@+id/txt_no_internet"
@@ -15,13 +16,15 @@
         android:text="@string/no_internet"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/txt_no_favs"
+    <fragment
+        android:id="@+id/movie_list_fragment"
+        android:name="com.abnd.mdiaz.popularmovies.fragments.MovieListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="The Favorite Movies list is empty. Add Movies to your favorites using the menu option on the top right."
-        android:visibility="gone" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        tools:layout="@layout/fragment_movie_list" />
 
-</FrameLayout>
+</RelativeLayout>

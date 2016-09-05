@@ -61,6 +61,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     }
 
     public void clearData() {
+
         mMovieList.clear();
     }
 }
