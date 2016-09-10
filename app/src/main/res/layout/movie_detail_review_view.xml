@@ -32,7 +32,7 @@
         android:id="@+id/txt_review_content_element"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="#BFE0E0E0"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="6"

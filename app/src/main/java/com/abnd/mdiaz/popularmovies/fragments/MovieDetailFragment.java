@@ -364,13 +364,10 @@ public class MovieDetailFragment extends Fragment {
                                 movieReleaseDateTextView.setBackgroundColor(mLightColor);
 
                                 int darkAlphaColor = ColorUtils.setAlphaComponent(mDarkColor, 128);
+                                int alphaTextColor = ColorUtils.setAlphaComponent(Color.WHITE, 180);
                                 movieSynopsisTextView.setBackgroundColor(darkAlphaColor);
-
-                                /*GradientDrawable gd = new GradientDrawable(
-                                        GradientDrawable.Orientation.TOP_BOTTOM,
-                                        new int[]{Color.WHITE, mLightColor});
-
-                                movieDetailScrollView.setBackground(gd);*/
+                                movieSynopsisTextView.setTextColor(alphaTextColor);
+                                movieSynopsisTextView.setShadowLayer(6, 0, 0, Color.BLACK);
 
                                 trailerHeader.setBackgroundColor(mDarkColor);
                                 reviewHeader.setBackgroundColor(mDarkColor);
