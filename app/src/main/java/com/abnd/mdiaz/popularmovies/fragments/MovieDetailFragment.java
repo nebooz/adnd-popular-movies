@@ -58,6 +58,7 @@ public class MovieDetailFragment extends Fragment {
     private static final String LARGE_IMAGE_SIZE = "w500";
     private ImageView backdropImageView;
     private ImageView posterImageView;
+    private ImageView mFavoriteTag;
     private TextView movieTitleTextView;
     private TextView movieRatingTextView;
     private TextView movieReleaseDateTextView;
@@ -73,7 +74,6 @@ public class MovieDetailFragment extends Fragment {
     private double mMovieRating;
     private String mMovieSynopsis;
     private String mMovieReleaseDate;
-    private boolean mFavoriteMovie;
 
     private Movie mMovie;
     private Realm realm;
@@ -312,6 +312,12 @@ public class MovieDetailFragment extends Fragment {
         movieReleaseDateTextView.setText(mMovieReleaseDate);
         movieSynopsisTextView.setText(mMovieSynopsis);
 
+        //Add Fav tag if Movie is in the Fav List
+        mFavoriteTag = (ImageView) view.findViewById(R.id.img_favorite_tag);
+        if (isFavorite()) {
+            mFavoriteTag.setVisibility(View.VISIBLE);
+        }
+
         String fullPosterPath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + mMoviePosterPath;
         String fullBackdropPath = IMAGE_BASE_URL + LARGE_IMAGE_SIZE + mMovieBackdropPath;
 
@@ -391,14 +397,24 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
 
+        MenuItem addToFavorites = menu.findItem(R.id.menu_add_favs);
+
+        if (isFavorite()) {
+            addToFavorites.setTitle("Remove from Favorites");
+        }
+
+    }
+
+    public boolean isFavorite() {
+
         int currentMovieId = mMovie.getMovieId();
 
-        MenuItem addToFavorites = menu.findItem(R.id.menu_add_favs);
         RealmResults<Movie> favCheck = realm.where(Movie.class).equalTo("movieId", currentMovieId).findAll();
 
         if (favCheck.size() > 0) {
-            mFavoriteMovie = true;
-            addToFavorites.setTitle("Remove from Favorites");
+            return true;
+        } else {
+            return false;
         }
 
     }
@@ -410,16 +426,17 @@ public class MovieDetailFragment extends Fragment {
 
         switch (itemId) {
             case R.id.menu_add_favs:
-                if (!mFavoriteMovie) {
+                if (!isFavorite()) {
                     realm.executeTransactionAsync(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            Movie realmMovie = realm.copyToRealm(mMovie);
+                            realm.copyToRealm(mMovie);
                         }
                     }, new Realm.Transaction.OnSuccess() {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(getContext(), "Current movie added to Favorites!", Toast.LENGTH_SHORT).show();
+                            mFavoriteTag.setVisibility(View.VISIBLE);
                             getActivity().invalidateOptionsMenu();
                         }
                     });
@@ -436,6 +453,7 @@ public class MovieDetailFragment extends Fragment {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(getContext(), "Current movie was removed from Favorites!", Toast.LENGTH_SHORT).show();
+                            mFavoriteTag.setVisibility(View.GONE);
                             getActivity().invalidateOptionsMenu();
                         }
                     });
