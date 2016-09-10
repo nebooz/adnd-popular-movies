@@ -14,12 +14,14 @@ import java.util.List;
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     protected ImageView movieThumbnail;
+    protected ImageView favoriteTag;
     private List<Movie> mMovieList;
 
     public MovieViewHolder(View itemView, List<Movie> movieList) {
         super(itemView);
         mMovieList = movieList;
         movieThumbnail = (ImageView) itemView.findViewById(R.id.card_thumbnail);
+        favoriteTag = (ImageView) itemView.findViewById(R.id.img_card_fav_tag);
 
         itemView.setOnClickListener(this);
 

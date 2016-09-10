@@ -13,6 +13,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
@@ -39,7 +43,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
 
+        // Create a new instance of Realm.
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(mContext).build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+
         Movie currentMovie = mMovieList.get(position);
+
+        int currentMovieId = currentMovie.getMovieId();
+
+        RealmResults<Movie> favCheck = realm.where(Movie.class).equalTo("movieId", currentMovieId).findAll();
+
+        if (favCheck.size() > 0) {
+            holder.favoriteTag.setVisibility(View.VISIBLE);
+        } else {
+            holder.favoriteTag.setVisibility(View.GONE);
+        }
 
         String fullPosterPath = IMAGE_BASE_URL + MEDIUM_IMAGE_SIZE + currentMovie.getPosterPath();
 

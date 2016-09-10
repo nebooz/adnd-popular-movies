@@ -67,9 +67,12 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
+
+        getMovieList(mListType);
+
+        /*if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
             getMovieList(mListType);
-        }
+        }*/
         Log.d(TAG, "onResume: Movie List Fragment has resumed.");
     }
 
