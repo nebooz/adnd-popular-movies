@@ -5,6 +5,6 @@
     <dimen name="item_offset_portrait">6dp</dimen>
     <dimen name="item_offset_landscape">10dp</dimen>
     <dimen name="item_margin">6dp</dimen>
-    <dimen name="movie_list_card_width">120dp</dimen>
-    <dimen name="movie_list_card_height">180dp</dimen>
+    <dimen name="movie_list_card_width">100dp</dimen>
+    <dimen name="movie_list_card_height">150dp</dimen>
 </resources>
