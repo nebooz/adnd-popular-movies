@@ -1,6 +1,7 @@
 package com.abnd.mdiaz.popularmovies.rest;
 
 import com.abnd.mdiaz.popularmovies.model.MoviesResponse;
+import com.abnd.mdiaz.popularmovies.model.ReviewsResponse;
 import com.abnd.mdiaz.popularmovies.model.TrailersResponse;
 
 import retrofit2.Call;
@@ -21,5 +22,8 @@ public interface ApiInterface {
 
     @GET("movie/{id}/videos")
     Call<TrailersResponse> getMovieTrailers(@Path("id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<ReviewsResponse> getMovieReviews(@Path("id") int movieId, @Query("api_key") String apiKey);
 
 }

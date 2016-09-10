@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.abnd.mdiaz.popularmovies.MovieDetailActivity;
 import com.abnd.mdiaz.popularmovies.R;
@@ -15,7 +14,6 @@ import java.util.List;
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     protected ImageView movieThumbnail;
-    protected TextView movieName;
     private List<Movie> mMovieList;
 
     public MovieViewHolder(View itemView, List<Movie> movieList) {

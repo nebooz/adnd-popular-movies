@@ -3,7 +3,6 @@ package com.abnd.mdiaz.popularmovies.fragments;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +27,8 @@ import android.widget.Toast;
 
 import com.abnd.mdiaz.popularmovies.R;
 import com.abnd.mdiaz.popularmovies.model.Movie;
+import com.abnd.mdiaz.popularmovies.model.Review;
+import com.abnd.mdiaz.popularmovies.model.ReviewsResponse;
 import com.abnd.mdiaz.popularmovies.model.Trailer;
 import com.abnd.mdiaz.popularmovies.model.TrailersResponse;
 import com.abnd.mdiaz.popularmovies.rest.ApiClient;
@@ -62,6 +63,7 @@ public class MovieDetailFragment extends Fragment {
     private TextView movieReleaseDateTextView;
     private TextView movieSynopsisTextView;
     private TextView trailerHeader;
+    private TextView reviewHeader;
     private ScrollView movieDetailScrollView;
     private ProgressBar mMovieDetailProgressBar;
     private String mMovieName;
@@ -80,6 +82,7 @@ public class MovieDetailFragment extends Fragment {
     private int mLightColor;
 
     private LinearLayout mTrailerContainer;
+    private LinearLayout mReviewContainer;
 
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -207,6 +210,74 @@ public class MovieDetailFragment extends Fragment {
 
     }
 
+    private void getReviewList(int movieId) {
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ReviewsResponse> call = apiService.getMovieReviews(movieId, SensitiveInfo.getMoviesApiKey());
+
+        call.enqueue(new Callback<ReviewsResponse>() {
+            @Override
+            public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
+
+                List<Review> reviewList = response.body().getReviews();
+
+                if (reviewList.size() == 0) {
+
+                    ConstraintLayout currentReviewView = (ConstraintLayout) LayoutInflater.from(getContext())
+                            .inflate(R.layout.movie_detail_review_view, mReviewContainer, false);
+
+                    TextView currentReviewAuthor = (TextView) currentReviewView.findViewById(R.id.txt_review_author_element);
+
+                    View contentDivider = currentReviewView.findViewById(R.id.content_divider);
+                    contentDivider.setVisibility(View.GONE);
+
+                    TextView currentReviewContent = (TextView) currentReviewView.findViewById(R.id.txt_review_content_element);
+                    currentReviewContent.setVisibility(View.GONE);
+
+                    currentReviewAuthor.setText("No reviews available.");
+                    mReviewContainer.addView(currentReviewView);
+
+                } else {
+
+                    for (final Review currentReview : reviewList) {
+
+                        ConstraintLayout currentReviewView = (ConstraintLayout) LayoutInflater.from(getContext())
+                                .inflate(R.layout.movie_detail_review_view, mReviewContainer, false);
+
+                        TextView currentReviewAuthor = (TextView) currentReviewView.findViewById(R.id.txt_review_author_element);
+                        TextView currentReviewContent = (TextView) currentReviewView.findViewById(R.id.txt_review_content_element);
+
+                        currentReviewView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse(currentReview.getUrl()));
+                                startActivity(intent);
+                            }
+                        });
+
+                        currentReviewAuthor.setText(String.format("%s%s", getString(R.string.review_author), currentReview.getAuthor()));
+
+                        currentReviewContent.setText(currentReview.getContent());
+                        mReviewContainer.addView(currentReviewView);
+                    }
+
+                }
+
+                Log.d(TAG, "Number of reviews received: " + reviewList.size());
+            }
+
+            @Override
+            public void onFailure(Call<ReviewsResponse> call, Throwable t) {
+                // Log error here since request failed
+                Log.e(TAG, t.toString());
+            }
+        });
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -233,6 +304,7 @@ public class MovieDetailFragment extends Fragment {
         movieReleaseDateTextView = (TextView) view.findViewById(R.id.txt_release_date);
         movieSynopsisTextView = (TextView) view.findViewById(R.id.txt_synopsis);
         trailerHeader = (TextView) view.findViewById(R.id.txt_trailer_header);
+        reviewHeader = (TextView) view.findViewById(R.id.txt_review_header);
 
         //Assign values to views...
         movieTitleTextView.setText(mMovieName);
@@ -288,13 +360,14 @@ public class MovieDetailFragment extends Fragment {
                                 int darkAlphaColor = ColorUtils.setAlphaComponent(mDarkColor, 128);
                                 movieSynopsisTextView.setBackgroundColor(darkAlphaColor);
 
-                                GradientDrawable gd = new GradientDrawable(
+                                /*GradientDrawable gd = new GradientDrawable(
                                         GradientDrawable.Orientation.TOP_BOTTOM,
                                         new int[]{Color.WHITE, mLightColor});
 
-                                movieDetailScrollView.setBackground(gd);
+                                movieDetailScrollView.setBackground(gd);*/
 
                                 trailerHeader.setBackgroundColor(mDarkColor);
+                                reviewHeader.setBackgroundColor(mDarkColor);
 
                             }
                         })
@@ -302,6 +375,9 @@ public class MovieDetailFragment extends Fragment {
 
         mTrailerContainer = (LinearLayout) view.findViewById(R.id.trailer_list_container);
         getTrailerList(mMovieId);
+
+        mReviewContainer = (LinearLayout) view.findViewById(R.id.review_list_container);
+        getReviewList(mMovieId);
 
         return view;
     }
