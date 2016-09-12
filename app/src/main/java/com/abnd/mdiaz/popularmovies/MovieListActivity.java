@@ -35,16 +35,23 @@ public class MovieListActivity extends AppCompatActivity implements MovieViewHol
         // Call this to determine which layout we are in (tablet or phone)
         determinePaneLayout();
 
+        LinearLayout activityBaseLayout;
+
         if (!isTwoPane) {
 
-            LinearLayout activityBaseLayout = (LinearLayout) findViewById(R.id.movie_list_fragment_container);
+            activityBaseLayout = (LinearLayout) findViewById(R.id.movie_list_fragment_container);
 
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.list_mini_dark);
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bmp);
-            bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-            activityBaseLayout.setBackground(bitmapDrawable);
+
+        } else {
+
+            activityBaseLayout = (LinearLayout) findViewById(R.id.large_base_layout);
 
         }
+
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.list_mini_dark);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bmp);
+        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        activityBaseLayout.setBackground(bitmapDrawable);
 
     }
 
