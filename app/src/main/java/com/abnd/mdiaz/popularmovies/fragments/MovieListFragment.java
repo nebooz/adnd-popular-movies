@@ -1,6 +1,9 @@
 package com.abnd.mdiaz.popularmovies.fragments;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -44,6 +47,7 @@ public class MovieListFragment extends Fragment {
     private static final String TOP_MOVIES_TAG = "Top";
     private static final String POP_MOVIES_TAG = "Pop";
     private static final String FAV_MOVIES_TAG = "Fav";
+    private static final String INTER_FRAGMENT_TAG = "InterFragment";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
@@ -51,6 +55,10 @@ public class MovieListFragment extends Fragment {
     private String mListType;
     private ActionBar mActionBar;
     private TextView mEmptyFavsMessage;
+
+    private RealmConfiguration realmConfiguration;
+
+    private boolean validConnection;
 
     private Realm realm;
 
@@ -68,42 +76,53 @@ public class MovieListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        getMovieList(mListType);
-
-        /*if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
+        if (validConnection) {
             getMovieList(mListType);
-        }*/
+        }
+
         Log.d(TAG, "onResume: Movie List Fragment has resumed.");
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        validConnection = checkConnectivity();
+    }
+
+    private boolean checkConnectivity() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(getContext()).build();
+        if (validConnection) {
 
-        // Create a new empty instance of Realm
-        realm = Realm.getInstance(realmConfiguration);
+            realmConfiguration = new RealmConfiguration.Builder(getContext()).build();
 
-        if (savedInstanceState != null) {
-            mListType = savedInstanceState.getString("ListType", POP_MOVIES_TAG);
-            Log.d(TAG, "List Type: " + mListType);
-        } else {
-            mListType = POP_MOVIES_TAG;
+            // Create a new empty instance of Realm
+            realm = Realm.getInstance(realmConfiguration);
+
+            if (savedInstanceState != null) {
+                mListType = savedInstanceState.getString("ListType", POP_MOVIES_TAG);
+                Log.d(TAG, "List Type: " + mListType);
+            } else {
+                mListType = POP_MOVIES_TAG;
+            }
+
+            AppCompatActivity mActivity = (AppCompatActivity) getActivity();
+            mActionBar = mActivity.getSupportActionBar();
+
+            setHasOptionsMenu(true);
+
+            mAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
+
         }
-
-        AppCompatActivity mActivity = (AppCompatActivity) getActivity();
-        mActionBar = mActivity.getSupportActionBar();
-
-        setHasOptionsMenu(true);
-
-        mAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
-
     }
 
     @Override
@@ -119,22 +138,31 @@ public class MovieListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
-        mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
+        if (!validConnection) {
 
-        mEmptyFavsMessage = (TextView) view.findViewById(R.id.txt_no_favs);
+            TextView noInternetMessage = (TextView) view.findViewById(R.id.txt_no_internet);
+            noInternetMessage.setVisibility(View.VISIBLE);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
+        } else {
 
-        MarginDecoration marginDecoration = new MarginDecoration(getContext());
+            mProgressBar = (ProgressBar) view.findViewById(R.id.movie_list_progress_bar);
 
-        mRecyclerView.addItemDecoration(marginDecoration);
+            mEmptyFavsMessage = (TextView) view.findViewById(R.id.txt_no_favs);
 
-        mProgressBar.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
+            mRecyclerView = (RecyclerView) view.findViewById(R.id.main_recycler_view);
 
-        getMovieList(mListType);
+            MarginDecoration marginDecoration = new MarginDecoration(getContext());
 
-        mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.addItemDecoration(marginDecoration);
+
+            mProgressBar.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+
+            getMovieList(mListType);
+
+            mRecyclerView.setAdapter(mAdapter);
+
+        }
 
         return view;
     }
@@ -157,6 +185,7 @@ public class MovieListFragment extends Fragment {
                     break;
                 }
                 mListType = TOP_MOVIES_TAG;
+                getMovieList(mListType);
                 break;
             case R.id.menu_pop_movies:
                 if (Objects.equals(mListType, POP_MOVIES_TAG)) {
@@ -164,6 +193,7 @@ public class MovieListFragment extends Fragment {
                     break;
                 }
                 mListType = POP_MOVIES_TAG;
+                getMovieList(mListType);
                 break;
             case R.id.menu_fav_movies:
                 if (Objects.equals(mListType, FAV_MOVIES_TAG)) {
@@ -171,10 +201,19 @@ public class MovieListFragment extends Fragment {
                     break;
                 }
                 mListType = FAV_MOVIES_TAG;
+                getMovieList(mListType);
+                break;
+            case R.id.menu_add_favs:
+                if (!Objects.equals(mListType, FAV_MOVIES_TAG)) {
+
+                    getMovieList(mListType);
+
+                }
+                Log.d(TAG, "onOptionsItemSelected: MADE IT!");
                 break;
         }
 
-        getMovieList(mListType);
+        //getMovieList(mListType);
         return super.onOptionsItemSelected(item);
 
     }
@@ -201,21 +240,43 @@ public class MovieListFragment extends Fragment {
 
     }
 
-    private void getMovieList(String listType) {
+    public void getMovieList(String listType) {
+
+        if (Objects.equals(listType, INTER_FRAGMENT_TAG)) {
+
+            listType = mListType;
+
+        }
 
         if (Objects.equals(listType, FAV_MOVIES_TAG)) {
 
-
             RealmResults<Movie> favMoviesList = realm.where(Movie.class).findAll();
+
+            Log.d(TAG, "getMovieList: favMoviesList Size: " + favMoviesList.size());
+
             favMoviesList = favMoviesList.sort("title");
 
-            if (favMoviesList.size() == 0) {
+            /*
+            If I use the Realm list straight up, there is a lot of noise in the UX, especially
+            when trying to re-add a just deleted movie to the Fav list.
+            */
+            List<Movie> regenFavMoviesList = new ArrayList<>();
+
+            for (Movie currentRealmMovie :
+                    favMoviesList) {
+                regenFavMoviesList.add(new Movie(currentRealmMovie));
+            }
+
+
+            if (regenFavMoviesList.size() == 0) {
                 mEmptyFavsMessage.setVisibility(View.VISIBLE);
             } else {
                 mEmptyFavsMessage.setVisibility(View.GONE);
             }
 
-            loadAdapter(favMoviesList);
+            loadAdapter(regenFavMoviesList);
+
+            //loadAdapter(favMoviesList);
 
         } else {
 

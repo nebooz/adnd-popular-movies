@@ -31,13 +31,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         activityBaseLayout.setBackground(bitmapDrawable);
 
         Movie selectedMovie = getIntent().getParcelableExtra("selected_movie");
+        boolean isTablet = getIntent().getBooleanExtra("is_tablet", false);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(selectedMovie.getTitle());
 
         if (savedInstanceState == null) {
 
-            movieDetailFragment = MovieDetailFragment.newInstance(selectedMovie);
+            movieDetailFragment = MovieDetailFragment.newInstance(selectedMovie, isTablet);
 
             getSupportFragmentManager()
                     .beginTransaction()
@@ -57,4 +58,5 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

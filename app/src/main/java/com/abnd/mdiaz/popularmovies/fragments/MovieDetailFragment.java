@@ -1,6 +1,7 @@
 package com.abnd.mdiaz.popularmovies.fragments;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -56,6 +57,7 @@ public class MovieDetailFragment extends Fragment {
     private static final String SMALL_IMAGE_SIZE = "w92";
     private static final String MEDIUM_IMAGE_SIZE = "w185";
     private static final String LARGE_IMAGE_SIZE = "w500";
+    OnDatabaseChangedListener mCallback;
     private ImageView backdropImageView;
     private ImageView posterImageView;
     private ImageView mFavoriteTag;
@@ -74,13 +76,11 @@ public class MovieDetailFragment extends Fragment {
     private double mMovieRating;
     private String mMovieSynopsis;
     private String mMovieReleaseDate;
-
     private Movie mMovie;
     private Realm realm;
-
+    private boolean isTablet;
     private int mDarkColor;
     private int mLightColor;
-
     private LinearLayout mTrailerContainer;
     private LinearLayout mReviewContainer;
 
@@ -88,11 +88,12 @@ public class MovieDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static MovieDetailFragment newInstance(Movie movie) {
+    public static MovieDetailFragment newInstance(Movie movie, boolean isTablet) {
 
         MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable("selectedMovie", movie);
+        args.putBoolean("is_tablet", isTablet);
         movieDetailFragment.setArguments(args);
         return movieDetailFragment;
 
@@ -404,14 +405,33 @@ public class MovieDetailFragment extends Fragment {
 
     public boolean isFavorite() {
 
-        int currentMovieId = mMovie.getMovieId();
+        //int currentMovieId = mMovie.getMovieId();
 
-        RealmResults<Movie> favCheck = realm.where(Movie.class).equalTo("movieId", currentMovieId).findAll();
+        RealmResults<Movie> favCheck = realm.where(Movie.class).equalTo("movieId", mMovieId).findAll();
 
         if (favCheck.size() > 0) {
             return true;
         } else {
             return false;
+        }
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        isTablet = getArguments().getBoolean("is_tablet");
+
+        if (isTablet) {
+
+            try {
+                mCallback = (OnDatabaseChangedListener) context;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(context.toString()
+                        + " must implement OnDatabaseChangedListener");
+            }
+
         }
 
     }
@@ -424,43 +444,70 @@ public class MovieDetailFragment extends Fragment {
         switch (itemId) {
             case R.id.menu_add_favs:
                 if (!isFavorite()) {
+
                     realm.executeTransactionAsync(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
+
                             realm.copyToRealm(mMovie);
+
                         }
                     }, new Realm.Transaction.OnSuccess() {
                         @Override
                         public void onSuccess() {
+
                             Toast.makeText(getContext(), "Current movie added to Favorites!", Toast.LENGTH_SHORT).show();
                             mFavoriteTag.setVisibility(View.VISIBLE);
+                            if (isTablet) {
+
+                                mCallback.onDatabaseUpdate();
+
+                            }
                             getActivity().invalidateOptionsMenu();
+
                         }
                     });
-                    break;
+
+                    return true;
+
                 } else {
+
                     realm.executeTransactionAsync(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            int currentMovieId = mMovie.getMovieId();
-                            Movie currentMovie = realm.where(Movie.class).equalTo("movieId", currentMovieId).findFirst();
+
+                            Movie currentMovie = realm.where(Movie.class).equalTo("movieId", mMovieId).findFirst();
                             currentMovie.deleteFromRealm();
+
                         }
                     }, new Realm.Transaction.OnSuccess() {
                         @Override
                         public void onSuccess() {
+
                             Toast.makeText(getContext(), "Current movie was removed from Favorites!", Toast.LENGTH_SHORT).show();
                             mFavoriteTag.setVisibility(View.GONE);
+                            if (isTablet) {
+
+                                mCallback.onDatabaseUpdate();
+
+                            }
                             getActivity().invalidateOptionsMenu();
+
                         }
                     });
-                    break;
-                }
 
+                    return true;
+
+                }
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
+    }
 
+
+    public interface OnDatabaseChangedListener {
+        void onDatabaseUpdate();
     }
 
 }
